@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import { useMount } from "util";
 import { List } from "./components/list";
 import { Search } from "./components/search";
 export const SearchList = () => {
@@ -7,6 +8,9 @@ export const SearchList = () => {
   useEffect(() => {
       console.log(name)
   }, [name]);
+  useMount(()=>{
+      console.log('start')
+  })
   return (
     <div>
       <Search name={name} setName={setName}></Search>
