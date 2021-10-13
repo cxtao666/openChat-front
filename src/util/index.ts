@@ -1,14 +1,14 @@
 import { useEffect, useState } from "react";
 // 页面初始化的时候执行这个hook
-export const useMount = (callback:()=>void) => {
+export const useMount = (callback: () => void) => {
   useEffect(() => {
     callback();
   }, []);
 };
 
-let timeout:NodeJS.Timeout ;
-export const debounce = (func:(newValue:string)=>void, delay:number) => { 
-  return (arg:string) => {
+let timeout: NodeJS.Timeout;
+export const debounce = (func: (newValue: string) => void, delay: number) => {
+  return (arg: string) => {
     if (timeout) {
       clearTimeout(timeout);
     }
@@ -19,14 +19,27 @@ export const debounce = (func:(newValue:string)=>void, delay:number) => {
   };
 };
 
-export const useDebounce = (value:string, delay:number) => {
+export const useDebounce = (value: string, delay: number) => {
   const [debounceValue, setDebounceValue] = useState(value);
-  const delaySetValue = debounce((newValue:string) => {
+  const delaySetValue = debounce((newValue: string) => {
     setDebounceValue(newValue);
   }, delay);
   useEffect(() => {
     console.log(value);
     delaySetValue(value);
-  }, [value, delay,delaySetValue]);
+  }, [value, delay, delaySetValue]);
   return debounceValue;
+};
+
+// 对map进行深拷贝
+export const deepCloneMap = <K, V>(map:Map<K,V> | undefined) => {
+  if(map === undefined){
+    return map;
+  }
+  const newMap = new Map<K,V>();
+  for (let key of map.keys()) {
+    const value = map.get(key)
+    newMap.set(key, value as V);
+  }
+  return newMap;
 };

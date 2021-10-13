@@ -2,7 +2,7 @@
 import React, { useState } from "react";
 import { Badge, TabBar } from "antd-mobile";
 import { css } from "@emotion/react";
-import { Chat } from "./Chat";
+import  Chat  from "./Chat";
 import { Me } from "./Me";
 import { UpLoad } from "./UpLoad";
 import { Home } from "./Home";
