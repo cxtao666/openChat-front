@@ -1,11 +1,12 @@
 import { connect } from "react-redux";
 import { Message, State, UserId } from "store/state/singleChat";
-import { useState } from "react";
+import { useRef, useState } from "react";
+import { sendMessage, addFriend, connection } from "store/actions/singleChat";
 import {
-  sendMessage,
-  addFriend,
-  connection,
-} from "store/actions/singleChat";
+  createRTCConnection,
+  setVideoCache,
+  setUserCache,
+} from "../util/chat/videoCall";
 
 const Chat = (props: any) => {
   const { sendMessage, addFriend, connection } = props;
@@ -14,6 +15,9 @@ const Chat = (props: any) => {
   const [targetId, setTargetId] = useState("");
   const [userId, setUserId] = useState("");
   const [message, setMessage] = useState("");
+
+  let remoteVideo = useRef(null);
+  let localVideo = useRef(null);
 
   return (
     <div>
@@ -36,7 +40,13 @@ const Chat = (props: any) => {
           setTargetId(e.target.value);
         }}
       ></input>
-      <button onClick={() => {addFriend(targetId)}}>联系用户id</button>
+      <button
+        onClick={() => {
+          addFriend(targetId);
+        }}
+      >
+        联系用户id
+      </button>
       <input
         value={message}
         onChange={(e) => {
@@ -55,6 +65,35 @@ const Chat = (props: any) => {
           return <li key={item.createTime}>{item.message}</li>;
         })}
       </ul>
+      <button
+        onClick={async () => {
+          await createRTCConnection(userId, targetId, localVideo, remoteVideo);
+        }}
+      >
+        建立webRtc连接
+      </button>
+      <button
+        onClick={() => {
+          setVideoCache({
+            remoteVideo: remoteVideo.current,
+            localVideo: localVideo.current,
+          });
+        }}
+      >
+        传入视频id
+      </button>
+      <button
+        onClick={() => {
+          setUserCache({
+            userId,
+            targetUserId:targetId,
+          });
+        }}
+      >
+        传入用户id
+      </button>
+      <video ref={remoteVideo} height="200" width="200"></video>
+      <video ref={localVideo} height="200" width="200"></video>
     </div>
   );
 };
@@ -84,7 +123,7 @@ const mapDispatchToProps = (dispatch: any) => {
     },
     connection(data: UserId) {
       dispatch(connection(data));
-    }
+    },
   };
 };
 
