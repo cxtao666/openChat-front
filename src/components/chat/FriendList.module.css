@@ -1,0 +1,59 @@
+.avator{
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    color: #000000d9;
+    font-size: 14px;
+    font-variant: tabular-nums;
+    line-height: 1.5715;
+    list-style: none;
+    font-feature-settings: "tnum";
+    position: relative;
+    display: inline-block;
+    overflow: hidden;
+    color: #fff;
+    white-space: nowrap;
+    text-align: center;
+    vertical-align: middle;
+    background: #ccc;
+    width: 32px;
+    height: 32px;
+    line-height: 32px;
+    border-radius: 50%;
+}
+
+.item{
+    display: flex;
+    flex: 1;
+    align-items: flex-start;
+    max-width: 100%;
+    outline: none;
+    border-bottom: 1px solid #f0f0f0;
+    align-items: center;
+    padding-top: 15px;
+    padding-bottom: 15px;
+}
+
+.meta {
+    flex: 1 0;
+    width: 0;
+    color: #000000d9;
+}
+
+.title{
+    margin-bottom: 4px;
+    color: #000000d9;
+    font-size: 14px;
+    line-height: 1.5715;
+}
+
+.description{
+    color: #00000073;
+    font-size: 14px;
+    line-height: 1.5715;
+}
+
+.createTime{
+    color: #00000073;
+    font-size: 14px;
+}

@@ -1,0 +1,92 @@
+import { useEffect, useState } from "react";
+import { Friend } from "store/state/singleChat";
+import { timeStampToString } from "util/time";
+import FriendListCss from "./FriendList.module.css";
+
+interface FriendListProps {
+  friendList: Friend[];
+  searchFriendName: string;
+  setTargetUser: any;
+}
+
+export const FriendList = ({
+  friendList,
+  searchFriendName,
+  setTargetUser,
+}: FriendListProps) => {
+  const [List, setList] = useState([] as Friend[]);
+
+  // 这里是否有必要
+  useEffect(() => {
+    const list = [];
+    for (let item of friendList) {
+      list.push(item);
+    }
+    setList(list);
+  }, [friendList, setList]);
+
+  // 使得聊天窗口的对象发生改变
+  const openChatMessageWindow = (friend: Friend | undefined) => {
+    if (friend != null) {
+      setTargetUser(friend);
+    }
+  };
+
+  const renderFriend = (item: Friend | undefined) => {
+    return (
+      <div
+        className={FriendListCss.item}
+        onClick={() => {
+          openChatMessageWindow(item);
+        }}
+        key={item?.user.id}
+      >
+        <div style={{ marginLeft: "15px", marginRight: "15px" }}>
+          <img
+            className={FriendListCss.avator}
+            src={item?.user.avatar}
+            alt=""
+          ></img>
+        </div>
+
+        <div className={FriendListCss.meta}>
+          <h4 className={FriendListCss.title}>{item?.user.nickname}</h4>
+          <div className={FriendListCss.description}>
+            {item?.messageList.length !== 0
+              ? item?.messageList[item.messageList.length - 1].message
+              : ""}
+            <div style={{ fontSize: "8px" }}>
+              {item?.messageList.length !== 0 &&
+              item?.messageList[item.messageList.length - 1].isRead === false
+                ? "🍎未读"
+                : ""}
+            </div>
+          </div>
+        </div>
+        <div>
+          {item?.messageList.length !== 0
+            ? timeStampToString(
+                item?.messageList[item?.messageList.length - 1].createTime
+              )
+            : ""}
+        </div>
+      </div>
+    );
+  };
+
+  return (
+    <div>
+      {searchFriendName === ""
+        ? List.map(renderFriend)
+        : [
+            List.find((value) => {
+              if (value.user.nickname === searchFriendName) {
+                return true;
+              } else {
+                return false;
+              }
+            }),
+          ].map(renderFriend)}
+    </div>
+  );
+};

@@ -12,6 +12,6 @@ code {
     monospace;
 }
 
-tab {
-  position: absolute;
+li {
+  list-style: none;
 }

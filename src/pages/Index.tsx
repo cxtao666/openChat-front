@@ -1,48 +1,42 @@
 /** @jsxImportSource @emotion/react */
 import React, { useState } from "react";
-import { Badge, TabBar } from "antd-mobile";
 import { css } from "@emotion/react";
 import  Chat  from "./Chat";
-import { Me } from "./Me";
-import { UpLoad } from "./UpLoad";
-import { Home } from "./Home";
+import { Video } from "./Video";
+import { Meeting } from "./Meeting";
+import { MailList } from "./MailList";
 import { Route, Switch, useHistory, useRouteMatch } from "react-router-dom";
-import {
-  AppOutline,
-  MessageOutline,
-  MessageFill,
-  UploadOutline,
-  UserOutline,
-} from "antd-mobile-icons";
+import { Menu  } from 'antd';
+import { MessageFilled, IdcardFilled, VideoCameraFilled,BellFilled } from '@ant-design/icons';
+import { connect } from "react-redux";
+import indexCss from './index.module.css'
+import { State } from 'store/state/singleChat';
+
 
 // 组件必须以大写字母开头，否则TypeScript会大喊大叫
-function Index() {
+function Index(props:State) {
   const history = useHistory();
   const { path } = useRouteMatch();
   const tabs = [
     {
-      key: "home",
-      title: "首页",
-      icon: <AppOutline />,
-      badge: Badge.dot,
-    },
-    {
-      key: "upload",
-      title: "动态",
-      icon: <UploadOutline />,
-      badge: "5",
-    },
-    {
       key: "message",
-      title: "消息中心",
-      icon: (active: boolean) =>
-        active ? <MessageFill /> : <MessageOutline />,
-      badge: "99+",
+      title: "聊天",
+      icon: <MessageFilled className={indexCss.icon} style={{color:"white"}} /> ,
     },
     {
-      key: "personalCenter",
-      title: "个人中心",
-      icon: <UserOutline />,
+      key: "mailList",
+      title: "通讯录",
+      icon: <IdcardFilled className={indexCss.icon} style={{color:"white"}}/>,
+    },
+    {
+      key: "meeting",
+      title: "会议",
+      icon: <BellFilled className={indexCss.icon} style={{color:"white"}} />
+    },
+    {
+      key: "video",
+      title: "空间",
+      icon: <VideoCameraFilled className={indexCss.icon} style={{color:"white"}} />,
     },
   ];
 
@@ -50,49 +44,77 @@ function Index() {
   const changeActiveKey = (key: string) => {
     setActiveKey(key);
     switch (key) {
-      case "personalCenter":
-        history.push(`${path}/me`);
+      case "video":
+        history.push(`${path}/video`);
         break;
       case "message":
         history.push(`${path}/chat`);
         break;
-      case "upload":
-        history.push(`${path}/upload`);
+      case "meeting":
+        history.push(`${path}/meeting`);
         break;
-      case "home":
-        history.push(`${path}/home`);
+      case "mailList":
+        history.push(`${path}/mailList`);
         break;
     }
   };
 
   return (
-    <>
-      {activeKey.search("index") === -1 ? <div></div> : <Home></Home>}
-      <Switch>
-        <Route path={`${path}/me`} component={Me}></Route>
-        <Route path={`${path}/chat`} component={Chat}></Route>
-        <Route path={`${path}/upload`} component={UpLoad}></Route>
-        <Route path={`${path}/home`} component={Home}></Route>
-      </Switch>
+    <div style={{display:"flex",flexDirection:"row",width:"100%",height:"100%"}}>
       <div
         css={css`
-          position: fixed;
-          bottom: 0px;
-          width: 100%;
-          background-color: #fbfbfd;
+          left: 0px;
+          width: 200px;
+          background-color: #000;
+          text-align:center;
+          padding-top:20px;
         `}
       >
-        <TabBar
-          activeKey={activeKey === "index" ? "home" : activeKey}
-          onChange={changeActiveKey}
+        <img src={props.user.avatar}
+ alt="" style={{borderRadius:"50%",width:"100px",height:"100px"}} />
+        <Menu 
+          style={{padding:'0px'}}
+          defaultSelectedKeys={[activeKey === "index" ? "message" : activeKey]}
         >
           {tabs.map((item) => (
-            <TabBar.Item key={item.key} icon={item.icon} title={item.title} />
+            <div  onClick={()=>{
+              changeActiveKey(item.key)
+            }}
+            style={{display:"flex",flexDirection:"row",alignItems:"center",height:"50px",
+            justifyContent:"center",
+          }}
+            className={indexCss.item}
+            >
+              {item.icon}
+              <div style={{cursor:"pointer",marginLeft:'10px',color:'white'}}>{item.title}</div>
+            </div>
           ))}
-        </TabBar>
+        </Menu>
       </div>
-    </>
+      <div style={{flex:"1"}}>
+        {/index$/.test(window.location.href) ? <Chat></Chat>: <div></div>}
+      <Switch>
+        <Route path={`${path}/video`} component={Video}></Route>
+        <Route path={`${path}/chat`} component={Chat}></Route>
+        <Route path={`${path}/meeting`} component={Meeting}></Route>
+        <Route path={`${path}/mailList`} component={MailList}></Route>
+      </Switch>
+      </div>
+      
+    </div>
   );
 }
+const mapStateToProps = (state: State) => {
+  return {
+    ...state,
+  };
+};
 
-export default Index;
+// mapDispatchToProps：将dispatch映射到组件的props中
+const mapDispatchToProps = (dispatch: any) => {
+  return {
+  };
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(Index);
+
