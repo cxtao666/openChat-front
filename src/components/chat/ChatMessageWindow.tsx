@@ -8,7 +8,7 @@ interface ChatMessageWindowProps {
   targetUser: Friend;
   host: User;
   sendMessage(data: any): void;
-  setMessageListHasRead(data: User): void;
+  setMessageListHasRead(data: User,targetUser:User): void;
 }
 
 export const ChatMessageWindow = ({

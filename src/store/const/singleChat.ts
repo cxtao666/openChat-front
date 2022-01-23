@@ -5,6 +5,7 @@ const REMOVE_FRiEND = "removeFriend"; //删除好友用户
 const SET_USER = 'setUser'; // 设置自己的用户id
 const INIT_CHAT_STATE = 'initChatState'
 const SET_MESSAGE_LIST_HAS_READ = 'setMessageListHasRead' // 设置消息已读
+const SET_TARGET_MESSAGE_HAS_READ = 'setTargetMessageHasRead' // 设置对方消息已读
 
 export const singleChat = {
   SEND_MESSAGE,
@@ -13,5 +14,6 @@ export const singleChat = {
   REMOVE_FRiEND,
   SET_USER,
   INIT_CHAT_STATE,
-  SET_MESSAGE_LIST_HAS_READ
+  SET_MESSAGE_LIST_HAS_READ,
+  SET_TARGET_MESSAGE_HAS_READ
 };

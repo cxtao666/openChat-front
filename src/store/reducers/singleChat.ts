@@ -1,6 +1,6 @@
 // 默认值
 import { singleChat } from "store/const/singleChat";
-import { Friend, Message, State, UserId , User } from "../state/singleChat";
+import { Friend, Message, State, UserId, User } from "../state/singleChat";
 import { deepCloneMap } from "../../util/index";
 
 const sendMessage = (state: State, payload: Message) => {
@@ -15,8 +15,10 @@ const receiveMessage = (state: State, payload: Message) => {
   const newState = {
     ...state,
     friendList: deepCloneMap<UserId, Friend>(state?.friendList),
-  };
-  newState.friendList?.get(payload.userId)?.messageList.push(payload);
+  }; 
+  console.log('消息列表',newState.friendList?.get(payload.userId));
+  newState.friendList?.get(payload.userId)?.messageList.push(payload); 
+  console.log("状态",  newState);
   return newState;
 };
 
@@ -31,23 +33,24 @@ const addFriend = (state: State, payload: User) => {
     newState.friendList?.set(payload.id, {
       userId: payload.id,
       messageList: [],
-      user:payload
+      user: payload,
     });
     return newState;
   }
 };
 
 const setMessageListHasRead = (state: State, payload: User) => {
-  console.log(payload)
   const newState = {
     ...state,
     friendList: deepCloneMap<UserId, Friend>(state?.friendList),
-  }
-  newState.friendList?.get(payload.id)?.messageList.forEach((val)=>{
-    val.isRead = true
-  })
-  return newState
-}
+  };
+  newState.friendList?.get(payload.id)?.messageList.forEach((val) => {
+    if(val.userId === payload.id){
+      val.isRead = true;
+    }
+  });
+  return newState;
+};
 
 const setUser = (state: State, payload: User) => {
   const newState = {
@@ -55,17 +58,34 @@ const setUser = (state: State, payload: User) => {
     friendList: new Map<UserId, Friend>(),
   };
   newState.userId = payload.id;
-  newState.user = payload
+  newState.user = payload;
   return newState;
 };
+
+const setTargetMessageHasRead = (state: State, payload: {userId:string;targetId:string}) => {
+  console.log('信息', payload.userId);
+  const newState = {
+    ...state,
+    friendList: deepCloneMap<UserId, Friend>(state?.friendList),
+  };
+  newState.friendList?.get(payload.userId)?.messageList.forEach((val) => {
+    console.log(val)
+    if(val.userId === payload.targetId){
+      val.isRead = true;
+    }
+  });
+  return newState;
+}
 
 // 一个reducer就是一个函数
 export const singleChatReducers = (state: any, action: any) => {
   // 不同的action有不同的处理逻辑
-  console.log(state, action);
+  //console.log(state, action);
   switch (action.type) {
+    case singleChat.SET_TARGET_MESSAGE_HAS_READ:
+      return setTargetMessageHasRead(state,action.data);
     case singleChat.SET_MESSAGE_LIST_HAS_READ:
-    return  setMessageListHasRead(state,action.data)
+      return setMessageListHasRead(state, action.data);
     case singleChat.RECEIVE_MESSAGE:
       return receiveMessage(state, action.data);
     case singleChat.SEND_MESSAGE:
@@ -78,7 +98,7 @@ export const singleChatReducers = (state: any, action: any) => {
       return {
         friendList: new Map(),
         userId: "",
-        user:{}
+        user: {},
       };
   }
 };

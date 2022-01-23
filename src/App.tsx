@@ -8,7 +8,7 @@ import "antd/dist/antd.css";
 // 组件必须以大写字母开头，否则TypeScript会大喊大叫
 function App() {
   return (
-    <div>
+    <div style={{ height: "100%" }}>
       <Route path="/index" component={Index} />
       <Route path="/login" component={Login}></Route>
       <Route path="/register" component={Register}></Route>

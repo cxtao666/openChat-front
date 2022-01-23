@@ -11,7 +11,8 @@ import { createSocket } from "./util/chat/index";
 const CHAT_BASIC = createSocket(store);
 declare global {
   interface Window {
-    CHAT_BASIC: any;
+    CHAT_BASIC: any; // websocket 方法
+    TATGET_USER: any; // 当前聊天窗口的目标用户
   }
 }
 window.CHAT_BASIC = CHAT_BASIC;

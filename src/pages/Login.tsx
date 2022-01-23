@@ -4,8 +4,7 @@ import { useHistory } from "react-router-dom";
 import { connection } from "store/actions/singleChat";
 import { connect } from "react-redux";
 import { User, State } from "store/state/singleChat";
-import { List , Input ,Button} from 'antd';
-
+import { List, Input, Button } from "antd";
 
 interface LoginProps {
   connectionToWs(data: User): void;
@@ -19,7 +18,7 @@ const Login = (props: LoginProps & State) => {
   const loginIn = async () => {
     let data = await login({ username, password });
     if (data !== null) {
-      connectionToWs(JSON.parse(data as string));
+      connectionToWs(data as any);
       history.push("/index");
     }
   };
@@ -27,17 +26,17 @@ const Login = (props: LoginProps & State) => {
   return (
     <div
       style={{
-        position:'absolute',
-        left:'0px',
-        right:'0px',
-        top:'0px',
-        bottom:'0px',
-        margin:'auto',
-        width:'500px',
-        height:'400px'
+        position: "absolute",
+        left: "0px",
+        right: "0px",
+        top: "0px",
+        bottom: "0px",
+        margin: "auto",
+        width: "500px",
+        height: "400px",
       }}
     >
-      <List >
+      <List>
         <h2>欢迎登录袂信</h2>
         <List.Item prefix="用户名">
           <Input

@@ -1,11 +1,11 @@
 import { connect } from "react-redux";
 import { State, User } from "store/state/singleChat";
-import { useEffect,  useState } from "react";
+import { useEffect, useState } from "react";
 import {
   sendMessage,
   addFriend,
   pullFriendList,
-  setMessageListHasRead
+  setMessageListHasRead,
 } from "store/actions/singleChat";
 
 import { UserList } from "../components/chat/UserList";
@@ -15,20 +15,25 @@ interface ChatProps {
   sendMessage(data: any): void;
   addFriend(data: User): void;
   pullFriendList(data: string): void;
+  setMessageListHasRead(data: User,targetUser:User): void;
 }
 
 const Chat = (props: State & ChatProps) => {
-  const { sendMessage, pullFriendList } = props;
+  const { sendMessage, pullFriendList, setMessageListHasRead } = props;
   const { friendList, user } = props;
 
   useEffect(() => {
     pullFriendList(user.id);
-  }, [user.id,pullFriendList]);
+  }, [user.id, pullFriendList]);
 
   // 当前聊天窗口展示的用户聊天记录
   const [targetUser, setTargetUser] = useState(
     [...friendList.values()][0] || null
   );
+
+  useEffect(() => {
+    window.TATGET_USER = targetUser;
+  }, [targetUser]);
 
   return (
     <div>
@@ -43,7 +48,7 @@ const Chat = (props: State & ChatProps) => {
         <div style={{ flex: "1" }}>
           <ChatMessageWindow
             setMessageListHasRead={setMessageListHasRead}
-           sendMessage={sendMessage}
+            sendMessage={sendMessage}
             targetUser={targetUser}
             host={user}
           ></ChatMessageWindow>
@@ -80,9 +85,9 @@ const mapDispatchToProps = (dispatch: any) => {
       dispatch(pullFriendList(id));
     },
 
-    setMessageListHasRead(user:User){
-      dispatch(setMessageListHasRead(user))
-    }
+    setMessageListHasRead(user: User,targetUser:User) {
+      dispatch(setMessageListHasRead(user,targetUser));
+    },
   };
 };
 

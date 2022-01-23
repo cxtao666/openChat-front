@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Friend } from "store/state/singleChat";
+import { Friend, User } from "store/state/singleChat";
 import { timeStampToString } from "util/time";
 import FriendListCss from "./FriendList.module.css";
 
@@ -7,12 +7,14 @@ interface FriendListProps {
   friendList: Friend[];
   searchFriendName: string;
   setTargetUser: any;
+  host: User;
 }
 
 export const FriendList = ({
   friendList,
   searchFriendName,
   setTargetUser,
+  host,
 }: FriendListProps) => {
   const [List, setList] = useState([] as Friend[]);
 
@@ -33,6 +35,10 @@ export const FriendList = ({
   };
 
   const renderFriend = (item: Friend | undefined) => {
+    if (item === undefined) {
+      return <div></div>;
+    }
+
     return (
       <div
         className={FriendListCss.item}
@@ -56,9 +62,15 @@ export const FriendList = ({
               ? item?.messageList[item.messageList.length - 1].message
               : ""}
             <div style={{ fontSize: "8px" }}>
-              {item?.messageList.length !== 0 &&
-              item?.messageList[item.messageList.length - 1].isRead === false
-                ? "🍎未读"
+              {item?.messageList.length !== 0
+                ? item?.messageList[item.messageList.length - 1].userId ===
+                  host.id
+                  ? item?.messageList[item.messageList.length - 1].isRead
+                    ? ""
+                    : "🍎对方未读"
+                  : item?.messageList[item.messageList.length - 1].isRead
+                  ? ""
+                  : "🍎未读消息"
                 : ""}
             </div>
           </div>

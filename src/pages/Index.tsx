@@ -68,6 +68,7 @@ function Index(props:State) {
           background-color: #000;
           text-align:center;
           padding-top:20px;
+          height:100%;
         `}
       >
         <img src={props.user.avatar}

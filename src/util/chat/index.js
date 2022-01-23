@@ -1,6 +1,7 @@
+import { updateMessageIsReadStatus } from "api/updateMessageIsReadStatus";
 import sockjs from "socket.io-client";
 import { singleChat } from "../../store/const/singleChat";
-import { receiveRTCConnection, setAnswer , receiveCandidate } from "./videoCall";
+import { receiveRTCConnection, setAnswer, receiveCandidate } from "./videoCall";
 
 const connectSocket = () => {
   const socket = sockjs("ws://localhost:5001", {
@@ -43,9 +44,20 @@ export const createSocket = (store) => {
   // 接受聊天消息
   socket.on("receiveSingleMessage", (data) => {
     console.log(data);
+    const message = JSON.parse(data);
+    console.log(window.TATGET_USER);
+    if (
+      window.TATGET_USER != null &&
+      window.TATGET_USER.userId === message.userId
+    ) {
+      message.isRead = true;
+      //todo 告诉后端，消息已经是已读的呢
+      updateMessageIsReadStatus(message.targetUserId, message.userId); //更新后端数据库
+      window.CHAT_BASIC.sendMessageHasRead(message.targetUserId, message.userId); //通知目标用户消息已读
+    }
     store.dispatch({
       type: singleChat.RECEIVE_MESSAGE,
-      data: JSON.parse(data),
+      data: message,
     });
   });
 
@@ -55,7 +67,24 @@ export const createSocket = (store) => {
       userId,
     });
   };
-  
+
+  // 发送消息确认接受
+  const sendMessageHasRead = (userId, targetId) => {
+    socket.emit("sendMessageHasRead", {
+      userId,
+      targetId,
+    });
+  };
+
+  // 处理对方已读消息 todo
+  socket.on("receiveMessageHasRed", (data) => {
+    console.log("对方消息已读", data);
+    store.dispatch({
+      type: singleChat.SET_TARGET_MESSAGE_HAS_READ,
+      data,
+    });
+  });
+
   // 发送聊天消息
   const sendMessage = ({
     userId,
@@ -89,16 +118,16 @@ export const createSocket = (store) => {
 
   const sendCandidate = (data) => {
     socket.emit("candidateToVideoChat", data);
-  }
+  };
 
   socket.on("ReceiveVideoChatAnswer", (message) => {
-    const { answer } = JSON.parse(message)
+    const { answer } = JSON.parse(message);
     setAnswer(answer);
   });
 
-  socket.on('ReceiveVideoChatCandidate',(data)=>{
-    receiveCandidate(JSON.parse(data))
-  })
+  socket.on("ReceiveVideoChatCandidate", (data) => {
+    receiveCandidate(JSON.parse(data));
+  });
 
   const CHAT_BASIC = {
     connection,
@@ -106,7 +135,8 @@ export const createSocket = (store) => {
     socket,
     sendOffer,
     sendAnswer,
-    sendCandidate
+    sendCandidate,
+    sendMessageHasRead,
   };
   return CHAT_BASIC;
 };

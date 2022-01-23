@@ -26,7 +26,7 @@ const Register = (props:RegisterProps&State) => {
     const data = await register({username,password,nickname})
     if(data !== null){
       const user = await login({username,password})
-      connection(JSON.parse(user as string))
+      connection(user as any);
       history.push('/index')  
     }
   };
