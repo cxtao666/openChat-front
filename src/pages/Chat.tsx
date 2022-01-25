@@ -6,6 +6,7 @@ import {
   addFriend,
   pullFriendList,
   setMessageListHasRead,
+  pullConcatMessage,
 } from "store/actions/singleChat";
 
 import { UserList } from "../components/chat/UserList";
@@ -15,12 +16,23 @@ interface ChatProps {
   sendMessage(data: any): void;
   addFriend(data: User): void;
   pullFriendList(data: string): void;
-  setMessageListHasRead(data: User,targetUser:User): void;
+  setMessageListHasRead(data: User, targetUser: User): void;
+  pullConcatMessage(
+    id: string,
+    targetUserId: string,
+    skip: number,
+    take: number
+  ): void;
 }
 
 const Chat = (props: State & ChatProps) => {
-  const { sendMessage, pullFriendList, setMessageListHasRead } = props;
-  const { friendList, user } = props;
+  const {
+    sendMessage,
+    pullFriendList,
+    setMessageListHasRead,
+    pullConcatMessage,
+  } = props;
+  const { friendList, user , skipMap } = props;
 
   useEffect(() => {
     pullFriendList(user.id);
@@ -47,6 +59,8 @@ const Chat = (props: State & ChatProps) => {
         </div>
         <div style={{ flex: "1" }}>
           <ChatMessageWindow
+            skipMap={skipMap}
+            pullConcatMessage={pullConcatMessage}
             setMessageListHasRead={setMessageListHasRead}
             sendMessage={sendMessage}
             targetUser={targetUser}
@@ -85,8 +99,16 @@ const mapDispatchToProps = (dispatch: any) => {
       dispatch(pullFriendList(id));
     },
 
-    setMessageListHasRead(user: User,targetUser:User) {
-      dispatch(setMessageListHasRead(user,targetUser));
+    setMessageListHasRead(user: User, targetUser: User) {
+      dispatch(setMessageListHasRead(user, targetUser));
+    },
+    pullConcatMessage(
+      id: string,
+      targetUserId: string,
+      skip: number,
+      take: number
+    ) {
+      dispatch(pullConcatMessage(id, targetUserId, skip, take));
     },
   };
 };

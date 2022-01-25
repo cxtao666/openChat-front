@@ -8,16 +8,26 @@ interface ChatMessageWindowProps {
   targetUser: Friend;
   host: User;
   sendMessage(data: any): void;
-  setMessageListHasRead(data: User,targetUser:User): void;
+  setMessageListHasRead(data: User, targetUser: User): void;
+  pullConcatMessage(
+    id: string,
+    targetUserId: string,
+    skip: number,
+    take: number
+  ): void;
+  skipMap: Map<string, number>;
 }
 
 export const ChatMessageWindow = ({
   targetUser,
   host,
   sendMessage,
-  setMessageListHasRead
+  setMessageListHasRead,
+  pullConcatMessage,
+  skipMap
 }: ChatMessageWindowProps) => {
-  const [mode, setMode] = useState(true);
+  const [mode, setMode] = useState(true); 
+  const [hasSendMessage , setHasSendMessage] = useState(false);
   return targetUser != null ? (
     <div
       style={{
@@ -30,16 +40,21 @@ export const ChatMessageWindow = ({
       {mode ? (
         <div>
           <ChatMessageList
+            skipMap={skipMap}
             messageList={targetUser?.messageList}
             user={host}
             targetUser={targetUser.user}
             setMessageListHasRead={setMessageListHasRead}
+            pullConcatMessage={pullConcatMessage}
+            hasSendMessage={hasSendMessage}
           ></ChatMessageList>
           <ChatWindowInput
             setMode={setMode}
             userId={host.id}
             targetUserId={targetUser.user.id}
             sendMessage={sendMessage}
+            hasSendMessage={hasSendMessage}
+            setHasSendMessage={setHasSendMessage}
           ></ChatWindowInput>
         </div>
       ) : (

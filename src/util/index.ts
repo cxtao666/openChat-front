@@ -6,8 +6,8 @@ export const useMount = (callback: () => void) => {
   }, []);
 };
 
-let timeout: NodeJS.Timeout;
 export const debounce = (func: (newValue: string) => void, delay: number) => {
+  let timeout: NodeJS.Timeout;
   return (arg: string) => {
     if (timeout) {
       clearTimeout(timeout);
@@ -15,6 +15,19 @@ export const debounce = (func: (newValue: string) => void, delay: number) => {
     timeout = setTimeout(function () {
       console.log("newValue", arg[0]);
       func(arg);
+    }, delay);
+  };
+};
+
+export const throttle = (func: (newValue: any) => void, delay: number) => {
+  let timeout:any;
+  return (arg: any) => {
+    if (timeout) {
+      return;
+    }
+    timeout = setTimeout(function () {
+      func(arg);
+      timeout = null;
     }, delay);
   };
 };
@@ -32,13 +45,13 @@ export const useDebounce = (value: string, delay: number) => {
 };
 
 // 对map进行深拷贝
-export const deepCloneMap = <K, V>(map:Map<K,V> | undefined) => {
-  if(map === undefined){
+export const deepCloneMap = <K, V>(map: Map<K, V> | undefined) => {
+  if (map === undefined) {
     return map;
   }
-  const newMap = new Map<K,V>();
+  const newMap = new Map<K, V>();
   for (let key of map.keys()) {
-    const value = map.get(key)
+    const value = map.get(key);
     newMap.set(key, value as V);
   }
   return newMap;

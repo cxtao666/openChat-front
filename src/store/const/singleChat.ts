@@ -6,6 +6,7 @@ const SET_USER = 'setUser'; // 设置自己的用户id
 const INIT_CHAT_STATE = 'initChatState'
 const SET_MESSAGE_LIST_HAS_READ = 'setMessageListHasRead' // 设置消息已读
 const SET_TARGET_MESSAGE_HAS_READ = 'setTargetMessageHasRead' // 设置对方消息已读
+const PULL_MESSAGE = 'pullMessage' // 拉取好友的聊天记录
 
 export const singleChat = {
   SEND_MESSAGE,
@@ -15,5 +16,6 @@ export const singleChat = {
   SET_USER,
   INIT_CHAT_STATE,
   SET_MESSAGE_LIST_HAS_READ,
-  SET_TARGET_MESSAGE_HAS_READ
+  SET_TARGET_MESSAGE_HAS_READ,
+  PULL_MESSAGE
 };

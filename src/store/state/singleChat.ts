@@ -13,7 +13,9 @@ export interface Message {
   message: string;
   userId: UserId;
   targetUserId: UserId;
-  isRead: Boolean;
+  isRead: Boolean | number;
+  id:number;
+  msgId:string
 }
 
 export interface Friend {
@@ -26,4 +28,5 @@ export interface State {
   userId: UserId;
   user:User
   friendList: Map<UserId, Friend>;
+  skipMap : Map<string,number>
 }

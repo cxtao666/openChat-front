@@ -5,6 +5,8 @@ interface ChatWindowInputProps {
   targetUserId: string;
   sendMessage(data: any): void;
   setMode(data: any): void;
+  setHasSendMessage(data:boolean):void;
+  hasSendMessage:boolean;
 }
 
 // 发送消息，调用websocket，并且消息存入本地
@@ -13,6 +15,8 @@ export const ChatWindowInput = ({
   targetUserId,
   sendMessage,
   setMode,
+  setHasSendMessage,
+  hasSendMessage
 }: ChatWindowInputProps) => {
   const [message, setMessage] = useState("");
   return (
@@ -29,6 +33,7 @@ export const ChatWindowInput = ({
         onClick={() => {
           sendMessage({ userId, targetUserId, message });
           setMessage("");
+          setHasSendMessage(!hasSendMessage);
         }}
       >
         发送

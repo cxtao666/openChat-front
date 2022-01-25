@@ -3,6 +3,7 @@ import { singleChat } from "store/const/singleChat";
 import { Friend, Message, State, UserId, User } from "../state/singleChat";
 import { deepCloneMap } from "../../util/index";
 
+
 const sendMessage = (state: State, payload: Message) => {
   const newState = {
     ...state,
@@ -77,6 +78,17 @@ const setTargetMessageHasRead = (state: State, payload: {userId:string;targetId:
   return newState;
 }
 
+// 插入好友的聊天记录
+const pullMessage = (state:State,payload:{targetUserId:string,message:Message}) => {
+  const newState = {
+    ...state,
+    friendList: deepCloneMap<UserId, Friend>(state?.friendList),
+  };
+  newState.friendList?.get(payload.targetUserId)?.messageList.unshift(payload.message)
+  return newState
+}
+
+
 // 一个reducer就是一个函数
 export const singleChatReducers = (state: any, action: any) => {
   // 不同的action有不同的处理逻辑
@@ -94,8 +106,11 @@ export const singleChatReducers = (state: any, action: any) => {
       return addFriend(state, action.data);
     case singleChat.SET_USER:
       return setUser(state, action.data);
+    case singleChat.PULL_MESSAGE:
+      return pullMessage(state,action.data);
     case singleChat.INIT_CHAT_STATE:
       return {
+        skipMap:new Map(),
         friendList: new Map(),
         userId: "",
         user: {},
