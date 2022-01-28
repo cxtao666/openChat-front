@@ -1,7 +1,7 @@
 import { get } from "util/api";
-export const updateMessageIsReadStatus = (
+export const updateMessageIsReadStatus = async (
   userId: string,
-  targetUserId: string,
+  targetUserId: string
 ) => {
   return get("msg/centerMessageIsRead", {
     id: userId,

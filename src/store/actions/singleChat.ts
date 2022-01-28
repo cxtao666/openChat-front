@@ -11,7 +11,7 @@ export function sendMessage(data: any) {
     window.CHAT_BASIC.sendMessage({ ...data, createTime, isRead });
     dispatch({
       type: singleChat.SEND_MESSAGE,
-      data: { ...data, createTime },
+      data: { ...data, createTime, isRead },
     });
   };
 }
@@ -47,21 +47,28 @@ export const setMessageListHasRead = (user: User, targetUser: User) => {
 // 去后端拉取用户的好友，并将好友信息写入reduce
 export const pullFriendList = (id: string) => {
   return (dispatch: any) => {
-    pullChatFriendList(id).then((data) => {
-      for (let item of data) {
-        // 添加用户到redux
-        dispatch({ type: singleChat.ADD_FRIEND, data: item.data });
-        if (item.message) {
-          for(let val of item.message){
-            if (val.userId === id) {
-              dispatch({ type: singleChat.SEND_MESSAGE, data:val });
+    pullChatFriendList(id)
+      .then((data) => {
+        const friendIdList: string[] = [];
+        for (let item of data) {
+          friendIdList.push(item.data.id);
+          // 添加用户到redux
+          dispatch({ type: singleChat.ADD_FRIEND, data: item.data });
+          if (item.message) {
+            for (let val of item.message.reverse()) {
+              if (val.userId === id) {
+                dispatch({ type: singleChat.SEND_MESSAGE, data: val });
+              }
+              dispatch({ type: singleChat.RECEIVE_MESSAGE, data: val });
             }
-            dispatch({ type: singleChat.RECEIVE_MESSAGE, data: val });
-          }     
+          }
         }
-      }
-      return data;
-    });
+        return friendIdList;
+      })
+      .then((friendIdList) => {
+        console.log(friendIdList);
+        window.CHAT_BASIC.requestFriendIsOnine(friendIdList);
+      });
   };
 };
 
@@ -73,7 +80,7 @@ export const pullConcatMessage = (
   take: number
 ) => {
   return (dispatch: any) => {
-    pullChatMessage(id, targetUserId, skip, take).then((data: Message []) => {
+    pullChatMessage(id, targetUserId, skip, take).then((data: Message[]) => {
       data.forEach((val) => {
         dispatch({
           type: singleChat.PULL_MESSAGE,

@@ -1,9 +1,12 @@
 import { Message, User } from "store/state/singleChat";
-import { Avatar } from "antd";
+import { Avatar, message } from "antd";
 import { useEffect, useState } from "react";
 import BScroll from "@better-scroll/core";
 import MouseWheel from "@better-scroll/mouse-wheel";
 import { throttle } from "util/index";
+import { timeStampToString } from "util/time";
+import { createEvent } from "util/event";
+import { ShowFile } from "./ShowFile";
 
 // 允许使用鼠标进行滚动
 BScroll.use(MouseWheel);
@@ -70,6 +73,12 @@ export const ChatMessageList = ({
     bs.on("scroll", throttle(onScroll, 1000));
     console.log("执行到底部");
     bs.scrollToElement(".end", 0, 0, 0);
+    createEvent().on("refreshList", () => {
+      // 收到了消息，重新计算列表高度 
+        bs.refresh();
+      //todo  可以提示以下用户有新的消息进来
+      message.info("有新消息");
+    });
     return () => {
       bs.destroy();
     };
@@ -78,17 +87,20 @@ export const ChatMessageList = ({
   return (
     <div>
       <div style={{ display: "flex" }}>
-        <div>{isToLoadingData ? "正在加载数据" : ""}</div>
+        <div>{isToLoadingData ? "加载历史消息中" : ""}</div>
       </div>
 
       <div
         className="wrapper"
-        style={{ height: "500px", position: "relative", overflow: "hidden" }}
+        style={{ height: "430px", position: "relative", overflow: "hidden" }}
       >
         <div>
           {messageList.map((item) => {
             return (
               <div>
+                <div style={{ display: "flex", justifyContent: "center" }}>
+                  {timeStampToString(item.createTime)}
+                </div>
                 {item.targetUserId === user.id ? (
                   <div
                     style={{
@@ -105,21 +117,25 @@ export const ChatMessageList = ({
                       size="large"
                       style={{ marginRight: "20px" }}
                     ></Avatar>
-                    <div
-                      style={{
-                        marginRight: "20px",
-                        textAlign: "center",
-                        padding: "10px",
-                        backgroundColor: "#ececec",
-                        borderRadius: "10%",
-                        fontWeight: "bold",
-                        wordWrap: "break-word",
-                        wordBreak: "normal",
-                        maxWidth: "300px",
-                      }}
-                    >
-                      {item.message}
-                    </div>
+                    {item.msgId !== "" ? (
+                      <ShowFile type={item.msgId} url={item.message}></ShowFile>
+                    ) : (
+                      <div
+                        style={{
+                          marginRight: "20px",
+                          textAlign: "center",
+                          padding: "10px",
+                          backgroundColor: "#ececec",
+                          borderRadius: "10%",
+                          fontWeight: "bold",
+                          wordWrap: "break-word",
+                          wordBreak: "normal",
+                          maxWidth: "300px",
+                        }}
+                      >
+                        {item.message}
+                      </div>
+                    )}
                     <div>
                       <span>[{item.isRead ? "消息已读" : "🍎消息未读"}]</span>
                     </div>
@@ -137,21 +153,26 @@ export const ChatMessageList = ({
                     <div>
                       <span>[{item.isRead ? "对方已读" : "🍎对方未读"}]</span>
                     </div>
-                    <div
-                      style={{
-                        marginRight: "20px",
-                        textAlign: "center",
-                        padding: "10px",
-                        backgroundColor: "#1890ff",
-                        borderRadius: "10%",
-                        fontWeight: "bold",
-                        maxWidth: "300px",
-                        wordWrap: "break-word",
-                        wordBreak: "normal",
-                      }}
-                    >
-                      {item.message}
-                    </div>
+                    {item.msgId !== "" ? (
+                      <ShowFile type={item.msgId} url={item.message}></ShowFile>
+                    ) : (
+                      <div
+                        style={{
+                          marginRight: "20px",
+                          textAlign: "center",
+                          padding: "10px",
+                          backgroundColor: "#1890ff",
+                          borderRadius: "10%",
+                          fontWeight: "bold",
+                          maxWidth: "300px",
+                          wordWrap: "break-word",
+                          wordBreak: "normal",
+                        }}
+                      >
+                        {item.message}
+                      </div>
+                    )}
+
                     <Avatar src={user.avatar} alt="" size="large"></Avatar>
                   </div>
                 )}

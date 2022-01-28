@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { Friend, User } from "store/state/singleChat";
 import { timeStampToString } from "util/time";
+import { judeFileType } from "util/upload/judeFileType";
 import FriendListCss from "./FriendList.module.css";
 
 interface FriendListProps {
@@ -56,10 +57,17 @@ export const FriendList = ({
         </div>
 
         <div className={FriendListCss.meta}>
-          <h4 className={FriendListCss.title}>{item?.user.nickname}</h4>
+          <h4 className={FriendListCss.title}>
+            {item?.user.nickname}{" "}
+            <span>{item.isOnline ? "[在线]" : "[离线]"}</span>
+          </h4>
           <div className={FriendListCss.description}>
             {item?.messageList.length !== 0
-              ? item?.messageList[item.messageList.length - 1].message
+              ? item?.messageList[item.messageList.length - 1].msgId === ""
+                ? item?.messageList[item.messageList.length - 1].message
+                : judeFileType(
+                    item?.messageList[item.messageList.length - 1].msgId
+                  )
               : ""}
             <div style={{ fontSize: "8px" }}>
               {item?.messageList.length !== 0

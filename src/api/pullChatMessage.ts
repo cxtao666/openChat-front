@@ -1,5 +1,5 @@
 import { get } from "util/api";
-export const pullChatMessage = (
+export const pullChatMessage = async (
   userId: string,
   targetUserId: string,
   skip: number,

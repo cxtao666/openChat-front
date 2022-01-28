@@ -2,6 +2,7 @@ import { updateMessageIsReadStatus } from "api/updateMessageIsReadStatus";
 import sockjs from "socket.io-client";
 import { singleChat } from "../../store/const/singleChat";
 import { receiveRTCConnection, setAnswer, receiveCandidate } from "./videoCall";
+import {createEvent} from '../event.ts'
 
 const connectSocket = () => {
   const socket = sockjs("ws://localhost:5001", {
@@ -51,14 +52,21 @@ export const createSocket = (store) => {
       window.TATGET_USER.userId === message.userId
     ) {
       message.isRead = true;
-      //todo 告诉后端，消息已经是已读的呢
+      //todo 告诉后端，消息已经是已读的了
       updateMessageIsReadStatus(message.targetUserId, message.userId); //更新后端数据库
-      window.CHAT_BASIC.sendMessageHasRead(message.targetUserId, message.userId); //通知目标用户消息已读
+      window.CHAT_BASIC.sendMessageHasRead(
+        message.targetUserId,
+        message.userId
+      ); //通知目标用户消息已读  
+     
     }
     store.dispatch({
       type: singleChat.RECEIVE_MESSAGE,
       data: message,
     });
+     // 更新列表
+     createEvent().emit('refreshList')
+  
   });
 
   // 上线
@@ -85,21 +93,32 @@ export const createSocket = (store) => {
     });
   });
 
-  // 发送聊天消息
-  const sendMessage = ({
-    userId,
-    targetUserId,
-    message,
-    createTime,
-    isRead,
-  }) => {
-    socket.emit("singleChat", {
-      userId,
-      targetUserId,
-      message,
-      createTime,
-      isRead,
+  // 接收朋友是否在线的信息
+  socket.on("receiveFriendIsOnline", (data) => {
+    console.log('已经获取到好友的在线状态',data)
+    store.dispatch({
+      type: singleChat.SET_FRIEND_IS_ONLINE,
+      data,
     });
+  });
+
+  // 更新好友的在线状态
+  socket.on('updateFriendOnlineStatus',(data)=>{
+    store.dispatch({
+      type:singleChat.UPDATE_FRIEND_ONLINE_STATUS,
+      data
+    })
+  })
+
+  const requestFriendIsOnine = (friendList) => {
+    socket.emit("friendIsOnline", {
+      friendList,
+    });
+  };
+
+  // 发送聊天消息
+  const sendMessage = (data) => {
+    socket.emit("singleChat", data);
   };
 
   // 发送视频聊天的offer
@@ -137,6 +156,7 @@ export const createSocket = (store) => {
     sendAnswer,
     sendCandidate,
     sendMessageHasRead,
+    requestFriendIsOnine
   };
   return CHAT_BASIC;
 };

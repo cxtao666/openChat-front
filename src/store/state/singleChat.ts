@@ -19,6 +19,7 @@ export interface Message {
 }
 
 export interface Friend {
+  isOnline:boolean;
   userId: UserId;
   user:User
   messageList: Message[];
