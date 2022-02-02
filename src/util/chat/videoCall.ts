@@ -2,9 +2,11 @@ import { message } from "antd";
 import { createEvent } from "util/event";
 
 export const pcConfig = {
-    'iceServers': [{
-        'urls': 'stun:stun.l.google.com:19302'
-    }]
+  iceServers: [
+    {
+      urls: "stun:stun.l.google.com:19302",
+    },
+  ],
 };
 
 const SINGALINT_STATUS = {
@@ -12,6 +14,8 @@ const SINGALINT_STATUS = {
   SINGALINT_OFFER: 1,
   SINGALINT_CANDIDATE: 2,
   SINGALINT_CLOSE: 3,
+  SINGALINT_START: 4,
+  SINGALINT_IS_RECEIVE:5
 };
 
 interface DataToPeerViaSignalingServer {
@@ -20,6 +24,7 @@ interface DataToPeerViaSignalingServer {
   targetUserId: string;
   answer?: RTCSessionDescriptionInit;
   candidate?: any;
+  isReceive?:boolean
 }
 
 const sendToPeerViaSignalingServer = (
@@ -32,8 +37,12 @@ const sendToPeerViaSignalingServer = (
     window.CHAT_BASIC.sendAnswer(data);
   } else if (status === SINGALINT_STATUS.SINGALINT_CLOSE) {
     window.CHAT_BASIC.sendClose(data);
-  } else {
-    window.CHAT_BASIC.sendCandidate(data);
+  } else if (status === SINGALINT_STATUS.SINGALINT_START) {
+    window.CHAT_BASIC.sendStart(data);
+  } else if(status === SINGALINT_STATUS.SINGALINT_IS_RECEIVE){
+   window.CHAT_BASIC.callIsReceiveVideoCall(data)
+  }else{
+     window.CHAT_BASIC.sendCandidate(data);
   }
 };
 
@@ -66,6 +75,12 @@ export const destroyUserCache = () => {
   userCache = null;
 };
 
+// 发送视频通话的请求，同意了在和对方建立webRTC连接，而不是直接建立webRTC连接
+export const sendRequest = (userId: string, targetUserId: string) => {
+  setUserCache({userId,targetUserId})
+  sendToPeerViaSignalingServer(SINGALINT_STATUS.SINGALINT_START,{userId,targetUserId})
+};
+
 // RTC 发送端
 export const createRTCConnection = async (
   userId: string,
@@ -89,13 +104,8 @@ export const receiveRTCConnection = async (
   targetUserId: string,
   offer: RTCSessionDescriptionInit
 ) => {
-  setUserCache({ userId: targetUserId, targetUserId: userId });
-
-  // 让组件展示框询问用户是否同意,告诉是哪个人call过来的
-  createEvent().emit("showVideoCall", userId);
-
   // 在此处设置事件，只要当用户同意了才会触发事件，开始视频通话
-  createEvent().on("receiveVideoCall", async () => {
+ // createEvent().on("receiveVideoCall", async () => {
     console.log("接收到的offer信息", offer);
     await pc.setRemoteDescription(new RTCSessionDescription(offer));
     await start();
@@ -106,7 +116,7 @@ export const receiveRTCConnection = async (
       targetUserId,
       answer,
     });
-  });
+  //});
 };
 
 // 设置answer
@@ -193,6 +203,7 @@ pc.onicecandidate = (e) => {
 export const receiveCandidate = (data: any) => {
   console.log("candidate", data);
   const candidate = new RTCIceCandidate(data.candidate);
+  console.log(pc);
   pc.addIceCandidate(candidate)
     .then(() => {
       console.log("Successed to add ice candidate");
@@ -205,18 +216,45 @@ export const receiveCandidate = (data: any) => {
 // 关闭rtc
 export const close = () => {
   sendToPeerViaSignalingServer(SINGALINT_STATUS.SINGALINT_CLOSE, userCache);
-//  videoCache.remoteVideo.pause();
-// videoCache.localVideo.pause();
+  //  videoCache.remoteVideo.pause();
+  // videoCache.localVideo.pause();
   pc.close();
   pc = new RTCPeerConnection(pcConfig);
 };
 
 export const receiveClose = () => {
- // videoCache.remoteVideo.pause();
- // videoCache.localVideo.pause();
+  // videoCache.remoteVideo.pause();
+  // videoCache.localVideo.pause();
   pc.close();
   pc = new RTCPeerConnection(pcConfig);
   destroyUserCache();
   message.success("对方已经挂断通话");
   createEvent().emit("closeVideo");
 };
+
+// 接受到某人的请求要开始视频通话
+export const receiveStart = (data:DataToPeerViaSignalingServer)=>{
+   setUserCache({ userId: data.targetUserId, targetUserId: data.userId });
+   // 让组件展示框询问用户是否同意,告诉是哪个人call过来的
+  createEvent().emit("showVideoCall", data.userId);
+}
+
+export const isReceiveVideoRequest = (flag:boolean)=>{
+  if(flag){
+    // 告知好友已接受视频通话邀请
+    sendToPeerViaSignalingServer(SINGALINT_STATUS.SINGALINT_IS_RECEIVE,{...userCache,isReceive:true})
+  }else{
+    // 告知好友拒绝视频通话邀请
+    sendToPeerViaSignalingServer(SINGALINT_STATUS.SINGALINT_IS_RECEIVE,{...userCache,isReceive:false})
+  }
+}
+
+export const isTargetUserReceiveVideoCall = (data:DataToPeerViaSignalingServer)=>{
+  console.log('对方已经回复')
+  if(data.isReceive){
+    message.success('对方已接受您的通话邀请，正在通话中,请稍后')
+    createRTCConnection(userCache.userId,userCache.targetUserId,videoCache.localVideo,videoCache.remoteVideo)
+  }else{
+    message.success('抱歉，对方拒绝了您的通话请求')
+  }
+}

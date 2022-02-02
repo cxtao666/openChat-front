@@ -6,6 +6,7 @@ import {
   setUserCache,
   destroyUserCache,
   close,
+  sendRequest,
 } from "../util/chat/videoCall";
 
 interface AvChatProps {
@@ -35,12 +36,7 @@ export const AvChat = ({ userId, targetUserId, setMode }: AvChatProps) => {
         <button
           onClick={async () => {
             const targetId = targetUserId;
-            await createRTCConnection(
-              userId,
-              targetId,
-              localVideo,
-              remoteVideo
-            );
+            sendRequest(userId,targetId)
           }}
         >
           开始通话
@@ -49,8 +45,8 @@ export const AvChat = ({ userId, targetUserId, setMode }: AvChatProps) => {
           onClick={() => {
             setMode(true);
             //todo 断开连接，关闭音视频，销毁rtc对象
-            close()
-            destroyUserCache();
+          //  close()
+          // destroyUserCache();
           }}
         >
           取消通话

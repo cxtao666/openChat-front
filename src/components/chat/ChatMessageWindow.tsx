@@ -5,7 +5,7 @@ import { useEffect, useState } from "react";
 import { AvChat } from "pages/AvChat";
 import { Modal } from "antd";
 import { createEvent } from "../../util/event";
-import { destroyUserCache } from "util/chat/videoCall";
+import { destroyUserCache, isReceiveVideoRequest } from "util/chat/videoCall";
 
 interface ChatMessageWindowProps {
   targetUser: Friend;
@@ -36,11 +36,13 @@ export const ChatMessageWindow = ({
   const handleOk = () => {
     setIsModalVisible(false);
     setMode(false); //打开视频聊天组件
-    setTimeout(() => {
+    isReceiveVideoRequest(true);
+    /*  setTimeout(() => {
       createEvent().emit("receiveVideoCall"); //开始通信
-    }, 1000);
+    }, 1000); */
   };
   const handleCancel = () => {
+    isReceiveVideoRequest(false);
     setIsModalVisible(false);
     createEvent().offAll("receiveVideoCall");
     destroyUserCache(); // 删掉用户缓存
@@ -53,9 +55,9 @@ export const ChatMessageWindow = ({
       setVideoCallUser(id); // 设置是哪个人call过来的
     });
     // 关闭视频通话组件
-    createEvent().on("closeVideo", () => {
+    /*  createEvent().on("closeVideo", () => {
       setMode(true);
-    });
+    }); */
   });
 
   return (

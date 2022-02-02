@@ -1,7 +1,7 @@
 import { updateMessageIsReadStatus } from "api/updateMessageIsReadStatus";
 import sockjs from "socket.io-client";
 import { singleChat } from "../../store/const/singleChat";
-import { receiveRTCConnection, setAnswer, receiveCandidate, receiveClose } from "./videoCall";
+import { receiveRTCConnection, setAnswer, receiveCandidate, receiveClose, receiveStart, isReceiveVideoRequest, isTargetUserReceiveVideoCall } from "./videoCall";
 import {createEvent} from '../event.ts'
 
 const connectSocket = () => {
@@ -143,6 +143,26 @@ export const createSocket = (store) => {
     socket.emit('closeVideoChat',data)
   }
 
+  const sendStart = (data)=>{
+    console.log('call某人')
+    socket.emit('startVideoChat',data)
+  }
+
+
+  const callIsReceiveVideoCall = (data) => {
+    socket.emit('isReceiveVideoCall',data)
+  }
+  
+
+  socket.on('receiveStartVideoChat',(data)=>{
+    console.log('接收到某人的视频请求',data)
+    receiveStart(data)
+  })
+
+  socket.on('ReceiveVideoCall',(data)=>{
+    isTargetUserReceiveVideoCall(data)
+  })
+
   socket.on('receiveCloseVideoChat',()=>{
     receiveClose()
   })
@@ -165,7 +185,9 @@ export const createSocket = (store) => {
     sendCandidate,
     sendMessageHasRead,
     requestFriendIsOnine,
-    sendClose
+    sendClose,
+    sendStart,
+    callIsReceiveVideoCall
   };
   return CHAT_BASIC;
 };
