@@ -1,7 +1,7 @@
 import { updateMessageIsReadStatus } from "api/updateMessageIsReadStatus";
 import sockjs from "socket.io-client";
 import { singleChat } from "../../store/const/singleChat";
-import { receiveRTCConnection, setAnswer, receiveCandidate, receiveClose, receiveStart, isReceiveVideoRequest, isTargetUserReceiveVideoCall } from "./videoCall";
+import { receiveRTCConnection, setAnswer, receiveCandidate, receiveClose, receiveStart, isTargetUserReceiveVideoCall } from "./videoCall";
 import {createEvent} from '../event.ts'
 
 const connectSocket = () => {

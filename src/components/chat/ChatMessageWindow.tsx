@@ -55,9 +55,9 @@ export const ChatMessageWindow = ({
       setVideoCallUser(id); // 设置是哪个人call过来的
     });
     // 关闭视频通话组件
-    /*  createEvent().on("closeVideo", () => {
+     createEvent().on("closeVideo", () => {
       setMode(true);
-    }); */
+    });
   });
 
   return (
