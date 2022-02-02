@@ -27,6 +27,11 @@ class EventHub {
     let index = indexOf(this.cache[eventName], fn);
     index !== -1 && this.cache[eventName].splice(index, 1);
   }
+
+  offAll(eventName: string) {
+    // 检查需要取消的事件是否存在, 如果存在则把该事件从this.cache[eventName]数组里面移除
+     this.cache[eventName] = []
+  }
 }
 
 let event: EventHub;

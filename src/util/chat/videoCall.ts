@@ -1,17 +1,17 @@
+import { message } from "antd";
+import { createEvent } from "util/event";
+
 export const pcConfig = {
-  iceServers: [
-    {
-      urls: "turn:stun.al.learningrtc.cn:3478",
-      credential: "mypasswd",
-      username: "garrylea",
-    },
-  ],
-  sdpSemantics: "plan-b",
+    'iceServers': [{
+        'urls': 'stun:stun.l.google.com:19302'
+    }]
 };
+
 const SINGALINT_STATUS = {
   SINGALINT_ANSWER: 0,
   SINGALINT_OFFER: 1,
   SINGALINT_CANDIDATE: 2,
+  SINGALINT_CLOSE: 3,
 };
 
 interface DataToPeerViaSignalingServer {
@@ -30,12 +30,14 @@ const sendToPeerViaSignalingServer = (
     window.CHAT_BASIC.sendOffer(data);
   else if (status === SINGALINT_STATUS.SINGALINT_ANSWER) {
     window.CHAT_BASIC.sendAnswer(data);
+  } else if (status === SINGALINT_STATUS.SINGALINT_CLOSE) {
+    window.CHAT_BASIC.sendClose(data);
   } else {
     window.CHAT_BASIC.sendCandidate(data);
   }
 };
 
-const pc = new RTCPeerConnection(pcConfig);
+let pc = new RTCPeerConnection(pcConfig);
 
 /* const userCache = {
     userId:'',
@@ -54,7 +56,14 @@ export const setUserCache = (data: {
   userId: string;
   targetUserId: string;
 }) => {
+  if (userCache) {
+    return;
+  }
   userCache = data;
+};
+
+export const destroyUserCache = () => {
+  userCache = null;
 };
 
 // RTC 发送端
@@ -80,15 +89,23 @@ export const receiveRTCConnection = async (
   targetUserId: string,
   offer: RTCSessionDescriptionInit
 ) => {
-  console.log(offer);
-  await pc.setRemoteDescription(new RTCSessionDescription(offer));
-  await start();
-  const answer = await pc.createAnswer();
-  await pc.setLocalDescription(answer);
-  sendToPeerViaSignalingServer(SINGALINT_STATUS.SINGALINT_ANSWER, {
-    userId,
-    targetUserId,
-    answer,
+  setUserCache({ userId: targetUserId, targetUserId: userId });
+
+  // 让组件展示框询问用户是否同意,告诉是哪个人call过来的
+  createEvent().emit("showVideoCall", userId);
+
+  // 在此处设置事件，只要当用户同意了才会触发事件，开始视频通话
+  createEvent().on("receiveVideoCall", async () => {
+    console.log("接收到的offer信息", offer);
+    await pc.setRemoteDescription(new RTCSessionDescription(offer));
+    await start();
+    const answer = await pc.createAnswer();
+    await pc.setLocalDescription(answer);
+    sendToPeerViaSignalingServer(SINGALINT_STATUS.SINGALINT_ANSWER, {
+      userId,
+      targetUserId,
+      answer,
+    });
   });
 };
 
@@ -126,7 +143,7 @@ function getMediaStream(stream: MediaStream) {
   let localStream = stream;
   console.log("发送出去的视频信息", localStream);
   videoCache.localVideo.srcObject = localStream;
-  videoCache.localVideo.play()
+  videoCache.localVideo.play();
   console.log(videoCache.localVideo.srcObject);
   // localVideo.srcObject = localStream;
   localStream.getTracks().forEach((track: any) => {
@@ -137,14 +154,26 @@ function getMediaStream(stream: MediaStream) {
 // 把接收到的视频流信息通过video标签展示出来
 pc.ontrack = getRemoteStream;
 function getRemoteStream(e: RTCTrackEvent) {
+  console.log("视频对象", videoCache);
   console.log(e);
   const remoteStream = e.streams[0];
   console.log("接收到的视频信息", remoteStream);
   videoCache.remoteVideo.srcObject = e.streams[0];
   videoCache.remoteVideo.play();
-  // remoteVideo.srcObject = e.streams[0];
-}
 
+  /* if (playPromise !== undefined) {
+    console.log(playPromise)
+    playPromise
+      .then((data: any) => {
+        // 这个时候可以安全的暂停
+        video.play();
+      })
+      .catch((err: any) => {
+        console.log(err);
+      });
+    // remoteVideo.srcObject = e.streams[0];
+  } */
+}
 // 接收cecandidate
 pc.onicecandidate = (e) => {
   console.log("接收到系统的cecandidate", e);
@@ -163,9 +192,7 @@ pc.onicecandidate = (e) => {
 //系统接收cecandidate,并发给对端
 export const receiveCandidate = (data: any) => {
   console.log("candidate", data);
-  const candidate = new RTCIceCandidate(
-    data.candidate,
-  );
+  const candidate = new RTCIceCandidate(data.candidate);
   pc.addIceCandidate(candidate)
     .then(() => {
       console.log("Successed to add ice candidate");
@@ -173,4 +200,23 @@ export const receiveCandidate = (data: any) => {
     .catch((err) => {
       console.error(err);
     });
+};
+
+// 关闭rtc
+export const close = () => {
+  sendToPeerViaSignalingServer(SINGALINT_STATUS.SINGALINT_CLOSE, userCache);
+//  videoCache.remoteVideo.pause();
+// videoCache.localVideo.pause();
+  pc.close();
+  pc = new RTCPeerConnection(pcConfig);
+};
+
+export const receiveClose = () => {
+ // videoCache.remoteVideo.pause();
+ // videoCache.localVideo.pause();
+  pc.close();
+  pc = new RTCPeerConnection(pcConfig);
+  destroyUserCache();
+  message.success("对方已经挂断通话");
+  createEvent().emit("closeVideo");
 };

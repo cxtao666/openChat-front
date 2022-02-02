@@ -1,7 +1,7 @@
 import { updateMessageIsReadStatus } from "api/updateMessageIsReadStatus";
 import sockjs from "socket.io-client";
 import { singleChat } from "../../store/const/singleChat";
-import { receiveRTCConnection, setAnswer, receiveCandidate } from "./videoCall";
+import { receiveRTCConnection, setAnswer, receiveCandidate, receiveClose } from "./videoCall";
 import {createEvent} from '../event.ts'
 
 const connectSocket = () => {
@@ -139,6 +139,14 @@ export const createSocket = (store) => {
     socket.emit("candidateToVideoChat", data);
   };
 
+  const sendClose = (data) => {
+    socket.emit('closeVideoChat',data)
+  }
+
+  socket.on('receiveCloseVideoChat',()=>{
+    receiveClose()
+  })
+
   socket.on("ReceiveVideoChatAnswer", (message) => {
     const { answer } = JSON.parse(message);
     setAnswer(answer);
@@ -156,7 +164,8 @@ export const createSocket = (store) => {
     sendAnswer,
     sendCandidate,
     sendMessageHasRead,
-    requestFriendIsOnine
+    requestFriendIsOnine,
+    sendClose
   };
   return CHAT_BASIC;
 };
