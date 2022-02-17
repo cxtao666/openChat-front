@@ -15,9 +15,10 @@ const suffix = (
 interface SearchProps {
   name: string;
   setName: (value: string) => void;
+  placeholder:string;
 }
 
-export const UserSearch = ({ name, setName }: SearchProps) => {
+export const UserSearch = ({ name, setName ,placeholder}: SearchProps) => {
   return (
     <div
       style={{
@@ -28,7 +29,7 @@ export const UserSearch = ({ name, setName }: SearchProps) => {
       }}
     >
       <Search
-        placeholder="输入用户昵称"
+        placeholder={placeholder}
         allowClear
         enterButton
         size="large"

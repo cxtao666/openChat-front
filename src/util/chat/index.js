@@ -1,9 +1,10 @@
 import { updateMessageIsReadStatus } from "api/updateMessageIsReadStatus";
 import sockjs from "socket.io-client";
 import { singleChat } from "../../store/const/singleChat";
-import { receiveRTCConnection, setAnswer, receiveCandidate, receiveClose, receiveStart, isTargetUserReceiveVideoCall } from "./videoCall";
+import { receiveRTCConnection, setAnswer, receiveCandidate, receiveClose, receiveStart, isReceiveVideoRequest, isTargetUserReceiveVideoCall } from "./videoCall";
 import {createEvent} from '../event.ts'
 
+// 这里记得要把transports 加上去,告诉socket.io连上去的是webSocket服务器,网上很多文档都不写这个的
 const connectSocket = () => {
   const socket = sockjs("ws://localhost:5001", {
     transports: ["websocket"],

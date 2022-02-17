@@ -4,7 +4,7 @@ import { css } from "@emotion/react";
 import  Chat  from "./Chat";
 import { Video } from "./Video";
 import { Meeting } from "./Meeting";
-import { MailList } from "./MailList";
+import  GroupChat  from "./GroupChat";
 import { Route, Switch, useHistory, useRouteMatch } from "react-router-dom";
 import { Menu  } from 'antd';
 import { MessageFilled, IdcardFilled, VideoCameraFilled,BellFilled } from '@ant-design/icons';
@@ -24,8 +24,8 @@ function Index(props:State) {
       icon: <MessageFilled className={indexCss.icon} style={{color:"white"}} /> ,
     },
     {
-      key: "mailList",
-      title: "通讯录",
+      key: "groupChat",
+      title: "群聊",
       icon: <IdcardFilled className={indexCss.icon} style={{color:"white"}}/>,
     },
     {
@@ -53,8 +53,8 @@ function Index(props:State) {
       case "meeting":
         history.push(`${path}/meeting`);
         break;
-      case "mailList":
-        history.push(`${path}/mailList`);
+      case "groupChat":
+        history.push(`${path}/groupChat`);
         break;
     }
   };
@@ -92,13 +92,13 @@ function Index(props:State) {
           ))}
         </Menu>
       </div>
-      <div style={{flex:"1"}}>
+      <div style={{flex:"1",height:"100%"}}>
         {/index$/.test(window.location.href) ? <Chat></Chat>: <div></div>}
       <Switch>
         <Route path={`${path}/video`} component={Video}></Route>
         <Route path={`${path}/chat`} component={Chat}></Route>
         <Route path={`${path}/meeting`} component={Meeting}></Route>
-        <Route path={`${path}/mailList`} component={MailList}></Route>
+        <Route path={`${path}/groupChat`} component={GroupChat}></Route>
       </Switch>
       </div>
       

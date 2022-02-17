@@ -49,7 +49,7 @@ const Chat = (props: State & ChatProps) => {
 
   return (
     <div>
-      <div style={{ display: "flex", flexDirection: "row" }}>
+      <div style={{ display: "flex", flexDirection: "row",height:"100%" }}>
         <div style={{ width: "300px" }}>
           <UserList
             friendList={[...friendList.values()]}

@@ -104,7 +104,7 @@ export const ChatWindowInput = ({
   return (
     <div>
       <Modal
-        title="Basic Modal"
+        title="emoji表情"
         visible={isModalVisible}
         onOk={handleOk}
         onCancel={handleCancel}
