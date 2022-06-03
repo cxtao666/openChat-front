@@ -21,7 +21,8 @@ interface ChatProps {
     id: string,
     targetUserId: string,
     skip: number,
-    take: number
+    take: number,
+    startId:number,
   ): void;
 }
 
@@ -32,7 +33,7 @@ const Chat = (props: State & ChatProps) => {
     setMessageListHasRead,
     pullConcatMessage,
   } = props;
-  const { friendList, user , skipMap } = props;
+  const { friendList, user , skipMap , messageIdMap } = props;
 
   useEffect(() => {
     pullFriendList(user.id);
@@ -59,6 +60,7 @@ const Chat = (props: State & ChatProps) => {
         </div>
         <div style={{ flex: "1" }}>
           <ChatMessageWindow
+            messageIdMap={messageIdMap}
             skipMap={skipMap}
             pullConcatMessage={pullConcatMessage}
             setMessageListHasRead={setMessageListHasRead}
@@ -106,9 +108,10 @@ const mapDispatchToProps = (dispatch: any) => {
       id: string,
       targetUserId: string,
       skip: number,
-      take: number
+      take: number,
+      startId:number
     ) {
-      dispatch(pullConcatMessage(id, targetUserId, skip, take));
+      dispatch(pullConcatMessage(id, targetUserId, skip, take,startId));
     },
   };
 };

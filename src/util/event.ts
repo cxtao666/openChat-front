@@ -12,8 +12,7 @@ class EventHub {
   // 把fn 推进this.cache[eventName]数组里
   on(eventName: string, fn: Event) {
     // 如果订阅的事件缓存里不存在任何处理函数，则初始化订阅事件名为一个空数组
-    this.cache[eventName] = this.cache[eventName] || [];
-    this.cache[eventName].push(fn);
+    this.cache[eventName] = [fn]
   }
 
   // 依次执行this.cache[eventName]数组里的函数

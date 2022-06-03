@@ -1,8 +1,17 @@
 import { updateMessageIsReadStatus } from "api/updateMessageIsReadStatus";
 import sockjs from "socket.io-client";
 import { singleChat } from "../../store/const/singleChat";
-import { receiveRTCConnection, setAnswer, receiveCandidate, receiveClose, receiveStart, isReceiveVideoRequest, isTargetUserReceiveVideoCall } from "./videoCall";
-import {createEvent} from '../event.ts'
+import {
+  receiveRTCConnection,
+  setAnswer,
+  receiveCandidate,
+  receiveClose,
+  receiveStart,
+  isTargetUserReceiveVideoCall,
+} from "./videoCall";
+import { createEvent } from "../event.ts";
+import { groupChat } from "store/const/groupChat";
+import { updateNewMessageId } from "api/updateNewMessageId";
 
 // 这里记得要把transports 加上去,告诉socket.io连上去的是webSocket服务器,网上很多文档都不写这个的
 const connectSocket = () => {
@@ -43,6 +52,7 @@ export const createSocket = (store) => {
   // 初始化 state
   store.dispatch({ type: singleChat.INIT_CHAT_STATE });
 
+  // 以下的socket连接用于单聊
   // 接受聊天消息
   socket.on("receiveSingleMessage", (data) => {
     console.log(data);
@@ -58,16 +68,14 @@ export const createSocket = (store) => {
       window.CHAT_BASIC.sendMessageHasRead(
         message.targetUserId,
         message.userId
-      ); //通知目标用户消息已读  
-     
+      ); //通知目标用户消息已读
     }
     store.dispatch({
       type: singleChat.RECEIVE_MESSAGE,
       data: message,
     });
-     // 更新列表
-     createEvent().emit('refreshList')
-  
+    // 更新列表
+    createEvent().emit("refreshList");
   });
 
   // 上线
@@ -96,7 +104,7 @@ export const createSocket = (store) => {
 
   // 接收朋友是否在线的信息
   socket.on("receiveFriendIsOnline", (data) => {
-    console.log('已经获取到好友的在线状态',data)
+    console.log("已经获取到好友的在线状态", data);
     store.dispatch({
       type: singleChat.SET_FRIEND_IS_ONLINE,
       data,
@@ -104,12 +112,12 @@ export const createSocket = (store) => {
   });
 
   // 更新好友的在线状态
-  socket.on('updateFriendOnlineStatus',(data)=>{
+  socket.on("updateFriendOnlineStatus", (data) => {
     store.dispatch({
-      type:singleChat.UPDATE_FRIEND_ONLINE_STATUS,
-      data
-    })
-  })
+      type: singleChat.UPDATE_FRIEND_ONLINE_STATUS,
+      data,
+    });
+  });
 
   const requestFriendIsOnine = (friendList) => {
     socket.emit("friendIsOnline", {
@@ -122,8 +130,104 @@ export const createSocket = (store) => {
     socket.emit("singleChat", data);
   };
 
+  // 下面的socket连接用于群聊
+  // 加群
+  const joinRoomChat = (data) => {
+    socket.emit("joinRoomChat", {
+      roomId: data.room.id,
+      userId: data.user.id,
+      message: {
+        nickname: data.user.nickname,
+        username: data.user.username,
+        avatar: data.user.avatar,
+        id: data.user.id,
+        roomId: data.room.id,
+      },
+    });
+  };
+
+  // 退群
+  const leaveRoomChat = (data) => {
+    socket.emit("leaveRoomChat", data);
+  };
+
+  //解散群聊
+  const dissolutionRoomChat = (data) => {
+    socket.emit("dissolutionRoomChat", data);
+  };
+
+  // 建群
+  const createRoomChat = (data) => {
+    socket.emit("createRoomChat", data);
+  };
+
+  // 发送消息到群聊
+  const sendRoomChat = (data) => {
+    socket.emit("sendRoomChat", {
+      roomId: data.roomId,
+      userId: data.userId,
+      message: data,
+    });
+  };
+  // 接受群聊消息
+  socket.on("receiveRoomMessage", (data) => {
+    store.dispatch({
+      type: groupChat.RECEIVE_GROUP_MESSAGE,
+      data,
+    });
+
+    if (window.TARGET_ROOM && window.TARGET_ROOM.room.id === data.roomId) {
+      createEvent().emit("refreshGroupList", {
+        flag: store.getState().userId === data.userId,
+      });
+      updateNewMessageId({
+        roomId: data.roomId,
+        id: data.id,
+        userId: store.getState().userId,
+      });
+      store.dispatch({
+        type: groupChat.UPDATE_MESSAGE_ISREAD,
+        data: { roomId: data.roomId, id: data.id },
+      });
+    }
+  });
+
+  socket.on("receiveMemberAddGroup", (data) => {
+    console.log("新用户入群资料", data);
+    // 有新用户入群
+    store.dispatch({
+      type: groupChat.GROUP_ADD_MEMBER,
+      data,
+    });
+  });
+
+  socket.on("receiveAddGroup", (data) => {
+    // 进了新群
+    store.dispatch({
+      type: groupChat.ADD_GROUP,
+      data,
+    });
+  });
+
+  socket.on("receiveMemberSignOutGroup", (data) => {
+    // 用户退出群聊
+    store.dispatch({
+      type: groupChat.GROUP_REMOVE_MEMBER,
+      data,
+    });
+  });
+
+  socket.on("receiveSignOutGroup", (data) => {
+    // 退群
+    store.dispatch({
+      type: groupChat.REMOVE_GROUP,
+      data,
+    });
+  });
+
   // 发送视频聊天的offer
   // 需要带上 userId 和 targetUserId
+  // 下面的socket连接用于音视频通话
   const sendOffer = ({ offer, userId, targetUserId }) => {
     socket.emit("OfferToVideoChat", { offer, userId, targetUserId });
   };
@@ -141,32 +245,30 @@ export const createSocket = (store) => {
   };
 
   const sendClose = (data) => {
-    socket.emit('closeVideoChat',data)
-  }
+    socket.emit("closeVideoChat", data);
+  };
 
-  const sendStart = (data)=>{
-    console.log('call某人')
-    socket.emit('startVideoChat',data)
-  }
-
+  const sendStart = (data) => {
+    console.log("call某人");
+    socket.emit("startVideoChat", data);
+  };
 
   const callIsReceiveVideoCall = (data) => {
-    socket.emit('isReceiveVideoCall',data)
-  }
-  
+    socket.emit("isReceiveVideoCall", data);
+  };
 
-  socket.on('receiveStartVideoChat',(data)=>{
-    console.log('接收到某人的视频请求',data)
-    receiveStart(data)
-  })
+  socket.on("receiveStartVideoChat", (data) => {
+    console.log("接收到某人的视频请求", data);
+    receiveStart(data);
+  });
 
-  socket.on('ReceiveVideoCall',(data)=>{
-    isTargetUserReceiveVideoCall(data)
-  })
+  socket.on("ReceiveVideoCall", (data) => {
+    isTargetUserReceiveVideoCall(data);
+  });
 
-  socket.on('receiveCloseVideoChat',()=>{
-    receiveClose()
-  })
+  socket.on("receiveCloseVideoChat", () => {
+    receiveClose();
+  });
 
   socket.on("ReceiveVideoChatAnswer", (message) => {
     const { answer } = JSON.parse(message);
@@ -188,7 +290,12 @@ export const createSocket = (store) => {
     requestFriendIsOnine,
     sendClose,
     sendStart,
-    callIsReceiveVideoCall
+    callIsReceiveVideoCall,
+    joinRoomChat,
+    leaveRoomChat,
+    sendRoomChat,
+    createRoomChat,
+    dissolutionRoomChat,
   };
   return CHAT_BASIC;
 };

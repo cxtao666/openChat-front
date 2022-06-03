@@ -1,3 +1,4 @@
+import { Button } from "antd";
 import { useEffect, useRef } from "react";
 
 import {
@@ -29,18 +30,51 @@ export const AvChat = ({ userId, targetUserId, setMode }: AvChatProps) => {
   });
   return (
     <div>
-      <video ref={remoteVideo} height="400" width="400"></video>
-      <video ref={localVideo} height="400" width="400"></video>
+      <div style={{ paddingLeft: "100px", display: "flex" }}>
+        <div>
+          <h2
+            style={{
+              textAlign: "center",
+              marginTop: "50px",
+              marginBottom: "-10px",
+            }}
+          >
+            对方信号
+          </h2>
+          <video ref={remoteVideo} height="350" width="400"></video>
+        </div>
+        <div>
+          <h2
+            style={{
+              textAlign: "center",
+              marginTop: "50px",
+              marginBottom: "-10px",
+            }}
+          >
+            自己信号
+          </h2>
+          <video
+            ref={localVideo}
+            height="350"
+            width="400"
+            style={{ marginLeft: "10px" }}
+          ></video>
+        </div>
+      </div>
+
       <div style={{ display: "flex", justifyContent: "center" }}>
-        <button
+        <Button
+          type="primary"
           onClick={async () => {
             const targetId = targetUserId;
             sendRequest(userId, targetId);
           }}
+          style={{ marginRight: "20px" }}
         >
           开始通话
-        </button>
-        <button
+        </Button>
+        <Button
+          type="primary"
           onClick={() => {
             setMode(true);
             //todo 断开连接，关闭音视频，销毁rtc对象
@@ -49,7 +83,7 @@ export const AvChat = ({ userId, targetUserId, setMode }: AvChatProps) => {
           }}
         >
           取消通话
-        </button>
+        </Button>
       </div>
     </div>
   );

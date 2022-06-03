@@ -3,6 +3,7 @@ import { Friend, User } from "store/state/singleChat";
 import { timeStampToString } from "util/time";
 import { judeFileType } from "util/upload/judeFileType";
 import FriendListCss from "./FriendList.module.css";
+import { List } from "antd";
 
 interface FriendListProps {
   friendList: Friend[];
@@ -17,7 +18,7 @@ export const FriendList = ({
   setTargetUser,
   host,
 }: FriendListProps) => {
-  const [List, setList] = useState([] as Friend[]);
+  const [Friendlist, setList] = useState([] as Friend[]);
 
   // 这里是否有必要
   useEffect(() => {
@@ -96,17 +97,23 @@ export const FriendList = ({
 
   return (
     <div>
-      {searchFriendName === ""
-        ? List.map(renderFriend)
-        : [
-            List.find((value) => {
-              if (value.user.nickname === searchFriendName) {
-                return true;
-              } else {
-                return false;
-              }
-            }),
-          ].map(renderFriend)}
+      {searchFriendName === "" ? (
+        <List
+          itemLayout="horizontal"
+          dataSource={Friendlist}
+          renderItem={renderFriend}
+        />
+      ) : (
+        [
+          Friendlist.find((value) => {
+            if (value.user.nickname === searchFriendName) {
+              return true;
+            } else {
+              return false;
+            }
+          }),
+        ].map(renderFriend)
+      )}
     </div>
   );
 };

@@ -42,24 +42,38 @@ export const AddGroup = ({ id }: AddGroupProps) => {
       ></UserSearch>
       {list.map((item: any) => {
         return (
-          <div style={{ display: "flex" }}>
-            <Avatar src={item.avator}></Avatar>
-            <div>
-              <h3>{item.roomUsername}</h3>
-              <p>{item.notice}</p>
+          <div
+            style={{ display: "flex", marginTop: "10px", alignItems: "center" }}
+          >
+            <Avatar src={item.avator} size="large"></Avatar>
+            <div style={{ marginLeft: "10px" }}>
+              <h2 style={{ marginBottom: "0px" }}>{item.roomUsername}</h2>
+              <div
+                style={{
+                  width: "200px",
+                  overflow: "hidden",
+                  whiteSpace: "nowrap",
+                  textOverflow: "ellipsis",
+                }}
+              >
+                公告：{item.notice}
+              </div>
             </div>
-            <button
-              onClick={() => {
-                setVisible(true);
-              }}
-            >
-              加入
-            </button>
+            <div style={{ marginLeft: "10px" }}>
+              <Button
+                type="primary"
+                onClick={() => {
+                  setVisible(true);
+                }}
+              >
+                加入
+              </Button>
+            </div>
           </div>
         );
       })}
       <Drawer
-        title="请输入验证消息"
+        title="群聊验证"
         placement={"top"}
         closable={false}
         onClose={onClose}
@@ -67,12 +81,14 @@ export const AddGroup = ({ id }: AddGroupProps) => {
         key={"top"}
       >
         <TextArea
+          placeholder="请输入验证信息"
           value={message}
           onChange={(e) => {
             setMessage(e.target.value);
           }}
         ></TextArea>
         <Button
+          style={{ marginTop: "10px" }}
           onClick={async () => {
             await requestAddGroup({ roomId: list[0].id, userId: id, message });
             onClose();

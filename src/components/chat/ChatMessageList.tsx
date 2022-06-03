@@ -20,10 +20,12 @@ interface ChatMessageListProps {
     id: string,
     targetUserId: string,
     skip: number,
-    take: number
+    take: number,
+    startId:number
   ): void;
   skipMap: Map<string, number>; // 用于存储拉取的联系人的页表
   hasSendMessage: boolean;
+  messageIdMap:Map<string, number>;
 }
 
 //进来的时候已经拉了10条消息，所以进来并不会去后台请求消息，当用户往上拉到顶，再去后端请求消息，同时把页的消息存起来。
@@ -36,6 +38,7 @@ export const ChatMessageList = ({
   pullConcatMessage,
   skipMap,
   hasSendMessage,
+  messageIdMap
 }: ChatMessageListProps) => {
   const [isToLoadingData, setIsToLoadingData] = useState(false);
   useEffect(() => {
@@ -59,11 +62,12 @@ export const ChatMessageList = ({
         const skip = skipMap.get(targetUser.id);
         console.log("进来了", skip);
         console.log("到顶部了");
-        setIsToLoadingData(true);
-        pullConcatMessage(user.id, targetUser.id, skip as number, 10); //去后端拉取和联系人的消息
-        setTimeout(() => {
-          skipMap.set(targetUser.id, (skip as number) + 1);
-          console.log("更新skip", skipMap.get(targetUser.id));
+        const startId = messageIdMap.get(targetUser.id);
+        setIsToLoadingData(true); // 异步执行
+        pullConcatMessage(user.id, targetUser.id, skip as number, 10 , startId as number ); //去后端拉取和联系人的消息。异步执行
+        skipMap.set(targetUser.id, (skip as number) + 1);
+        console.log("更新skip", skipMap.get(targetUser.id));
+        setTimeout(() => {  
           setIsToLoadingData(false);
           bs.refresh();
         }, 4000);

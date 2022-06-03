@@ -71,7 +71,7 @@ function Index(props:State) {
           height:100%;
         `}
       >
-        <img src={props.user.avatar}
+        <img src={props.user?.avatar}
  alt="" style={{borderRadius:"50%",width:"100px",height:"100px"}} />
         <Menu 
           style={{padding:'0px'}}

@@ -20,14 +20,7 @@ interface SearchProps {
 
 export const UserSearch = ({ name, setName ,placeholder}: SearchProps) => {
   return (
-    <div
-      style={{
-        paddingTop: "20px",
-        paddingLeft: "5%",
-        paddingRight: "5%",
-        paddingBottom: "20px",
-      }}
-    >
+    <div>
       <Search
         placeholder={placeholder}
         allowClear
