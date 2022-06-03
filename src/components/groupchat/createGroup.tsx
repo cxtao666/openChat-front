@@ -2,7 +2,7 @@ import Avatar from "antd/lib/avatar/avatar";
 import React, { useState } from "react";
 import { Friend } from "store/state/singleChat";
 import { LoadingOutlined, PlusOutlined } from "@ant-design/icons";
-import { Input, Upload, message, Button, Checkbox } from "antd";
+import { Input, Upload, message, Button, Checkbox, List } from "antd";
 import { QiNiuConfig } from "util/upload/qiniu";
 import { getRandomNumber } from "util/upload/getRandomNumber";
 import { getUploadToken } from "api/getUploadToken";
@@ -15,7 +15,7 @@ interface CreateGroupProps {
 }
 
 export const CreateGroup = ({ id, friendList }: CreateGroupProps) => {
-  let joinGroupUserList:any[]
+  const [joinGroupUserList, setJoinGroupUserList] = useState([] as any[]);
   const [imageUrl, setImageUrl] = useState("");
   const [loading, setLoading] = useState(false);
   const [roomUserName, setRoomUserName] = useState("");
@@ -40,7 +40,6 @@ export const CreateGroup = ({ id, friendList }: CreateGroupProps) => {
     return isJpgOrPng && isLt2M;
   }
 
-  
   const handleChange = (info: any) => {
     if (info.file.status === "uploading") {
       setLoading(true);
@@ -61,7 +60,7 @@ export const CreateGroup = ({ id, friendList }: CreateGroupProps) => {
   // 获取勾选的拉入群聊的好友的id
   function onChange(checkedValues: any[]) {
     console.log("checked = ", checkedValues);
-    joinGroupUserList = checkedValues
+    setJoinGroupUserList(checkedValues);
   }
 
   const uploadButton = (
@@ -81,7 +80,7 @@ export const CreateGroup = ({ id, friendList }: CreateGroupProps) => {
           }}
         ></Input>
       </div>
-      <div>
+      <div style={{ marginTop: "10px" }}>
         <Upload
           name="file"
           listType="picture-card"
@@ -109,37 +108,48 @@ export const CreateGroup = ({ id, friendList }: CreateGroupProps) => {
       </div>
 
       <Checkbox.Group style={{ width: "100%" }} onChange={onChange}>
-        {friendList.map((item) => {
-          return (
-            <div style={{ display: "flex", padding: "10px" }}>
-              <Checkbox value={item.user.id}></Checkbox>
-              <Avatar
-                src={item.user.avatar}
-                alt=""
-                size="large"
-                style={{ marginRight: "20px" }}
-              ></Avatar>
-              <div>{item.user.nickname}</div>
-            </div>
-          );
-        })}
+        <List
+          itemLayout="horizontal"
+          dataSource={friendList}
+          renderItem={(item) => {
+            return (
+              <div style={{ display: "flex", padding: "10px" , alignItems:"center"}}>
+                <Checkbox value={item.user.id}></Checkbox>
+                <Avatar
+                  src={item.user.avatar}
+                  alt=""
+                  size="large"
+                  style={{ marginRight: "10px", marginLeft:"10px" }}
+                ></Avatar>
+                <div>{item.user.nickname}</div>
+              </div>
+            );
+          }}
+        />
       </Checkbox.Group>
 
       <TextArea
+        placeholder="请输入群聊备注"
         value={notice}
         onChange={(e) => {
           setNotice(e.target.value);
         }}
       ></TextArea>
       <Button
+        style={{ marginTop: "10px" }}
         onClick={async () => {
-          await createRoom({
+          const room = await createRoom({
             masterId: id,
             roomName: ` ${getRandomNumber()}`,
             roomUsername: roomUserName,
             notice,
             avator: url,
-            joinGroupUserList
+            joinGroupUserList,
+          });
+          window.CHAT_BASIC.createRoomChat({
+            roomId: room.id,
+            masterId: id,
+            userList: joinGroupUserList,
           });
         }}
       >

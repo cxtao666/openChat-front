@@ -1,4 +1,5 @@
-import axios, {AxiosRequestConfig} from "axios";
+import axios, { AxiosRequestConfig } from "axios";
+import { removeInfoFromStorage } from './storage';
 
 const instance = axios.create({
   //创建axios实例，在这里可以设置请求的默认配置
@@ -22,8 +23,8 @@ let httpCode = {
 
 /** 添加请求拦截器 **/
 instance.interceptors.request.use(
-  (config:AxiosRequestConfig<any>) => {
-   // config.headers["token"] = sessionStorage.getItem("token") || "";
+  (config: any) => {
+   // config.headers["token"] = localStorage.getItem("token") || "";
     // 在这里：可以根据业务需求可以在发送请求之前做些什么:例如我这个是导出文件的接口，因为返回的是二进制流，所以需要设置请求响应类型为blob，就可以在此处设置。
     return config;
   },
@@ -36,18 +37,18 @@ instance.interceptors.request.use(
 /** 添加响应拦截器  **/
 instance.interceptors.response.use(
   (response) => {
-      console.log(response)
-    if (response.data.status === "ok") {
-      // 响应结果里的statusText: ok是我与后台的约定，大家可以根据实际情况去做对应的判断
-      return Promise.resolve(response.data.message);
-    } else {
-      return Promise.reject(response.data.message);
-    }
+    console.log(response);
+      if (response.data.status === "ok") {
+        // 响应结果里的statusText: ok是我与后台的约定，大家可以根据实际情况去做对应的判断
+        return Promise.resolve(response.data.message);
+      } else {
+        return Promise.reject(response.data.message);
+      }
   },
   (error) => {
     if (error.response) {
       // 根据请求失败的http状态码去给用户相应的提示
-     /*  let tips =
+      /*  let tips =
         error.response.status in httpCode
           ? httpCode[error.response.status]
           : error.response.data.message;
@@ -55,7 +56,8 @@ instance.interceptors.response.use(
       if (error.response.status === 401) {
         // token或者登陆失效情况下跳转到登录页面，根据实际情况，在这里可以根据不同的响应错误结果，做对应的事。这里我以401判断为例
         //针对框架跳转到登陆页面
-        // this.props.history.push(LOGIN);
+         // removeInfoFromStorage()
+          window.location.hash = "/login"
       }
       return Promise.reject(error);
     } else {

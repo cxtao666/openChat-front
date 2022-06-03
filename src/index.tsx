@@ -13,6 +13,8 @@ declare global {
   interface Window {
     CHAT_BASIC: any; // websocket 方法
     TATGET_USER: any; // 当前聊天窗口的目标用户
+    TARGET_ROOM:any; // 当前聊天窗口德目标房间
+    USERID: any ; // 当前用户的id
   }
 }
 window.CHAT_BASIC = CHAT_BASIC;

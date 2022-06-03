@@ -105,26 +105,41 @@ const setFriendIsOnline = (
     friendList: deepCloneMap<UserId, Friend>(state?.friendList),
   };
   for (let item of payload.friendsIsOnlineList) {
-    const friend = newState.friendList?.get(item.id)
-    if(friend){
-      friend.isOnline = item.isOnline
+    const friend = newState.friendList?.get(item.id);
+    if (friend) {
+      friend.isOnline = item.isOnline;
     }
   }
-  return newState
+  return newState;
 };
 
-const updateFriendOnlineStatus = (state: State,
-  payload: { id:string,isOnline:boolean }) => {
-    const newState = {
-      ...state,
-      friendList: deepCloneMap<UserId, Friend>(state?.friendList),
-    };
-    const friend = newState.friendList?.get(payload.id)
-    if(friend){
-      friend.isOnline = payload.isOnline
-    }
-    return newState
-}
+const updateFriendOnlineStatus = (
+  state: State,
+  payload: { id: string; isOnline: boolean }
+) => {
+  const newState = {
+    ...state,
+    friendList: deepCloneMap<UserId, Friend>(state?.friendList),
+  };
+  const friend = newState.friendList?.get(payload.id);
+  if (friend) {
+    friend.isOnline = payload.isOnline;
+  }
+  return newState;
+};
+
+const setMessageStartId = (
+  state: State,
+  payload: { id: string; startMessageId: number }
+) => {
+  console.log('初始化startId',payload)
+  const newState = {
+    ...state,
+    friendList: deepCloneMap<UserId, Friend>(state?.friendList),
+  };
+  newState.messageIdMap.set(payload.id, payload.startMessageId);
+  return  newState;
+};
 
 // 一个reducer就是一个函数
 export const singleChatReducers = (state: any, action: any) => {
@@ -148,13 +163,18 @@ export const singleChatReducers = (state: any, action: any) => {
     case singleChat.SET_FRIEND_IS_ONLINE:
       return setFriendIsOnline(state, action.data);
     case singleChat.UPDATE_FRIEND_ONLINE_STATUS:
-      return updateFriendOnlineStatus(state,action.data);
+      return updateFriendOnlineStatus(state, action.data);
+    case singleChat.SET_MESSAGE_START_ID:
+      return setMessageStartId(state, action.data);
     case singleChat.INIT_CHAT_STATE:
       return {
         skipMap: new Map(),
         friendList: new Map(),
         userId: "",
         user: {},
+        groupList: new Map(),
+        messageIdMap: new Map(),
       };
   }
+  return null;
 };

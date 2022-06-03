@@ -16,9 +16,11 @@ interface ChatMessageWindowProps {
     id: string,
     targetUserId: string,
     skip: number,
-    take: number
+    take: number,
+    startId:number
   ): void;
   skipMap: Map<string, number>;
+  messageIdMap:Map<string, number>;
 }
 
 export const ChatMessageWindow = ({
@@ -28,6 +30,7 @@ export const ChatMessageWindow = ({
   setMessageListHasRead,
   pullConcatMessage,
   skipMap,
+  messageIdMap
 }: ChatMessageWindowProps) => {
   const [mode, setMode] = useState(true);
   const [hasSendMessage, setHasSendMessage] = useState(false);
@@ -74,6 +77,7 @@ export const ChatMessageWindow = ({
             <h2 style={{ marginTop: "10px" }}>{targetUser.user.nickname}</h2>
             <div>
               <ChatMessageList
+                messageIdMap={messageIdMap}
                 skipMap={skipMap}
                 messageList={targetUser?.messageList}
                 user={host}
@@ -93,7 +97,7 @@ export const ChatMessageWindow = ({
             </div>
           </div>
         ) : (
-          <h1>欢迎使用!</h1>
+          <h2 style={{marginTop:"20px"}}>欢迎使用!</h2>
         )
       ) : (
         <AvChat

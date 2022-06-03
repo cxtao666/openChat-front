@@ -2,6 +2,7 @@
   "name": "jira",
   "version": "0.1.0",
   "private": true,
+  "license": "MIT",
   "dependencies": {
     "@ant-design/icons": "^4.7.0",
     "@better-scroll/core": "^2.4.2",

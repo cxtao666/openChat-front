@@ -11,11 +11,11 @@ export const createRoom = async (data: {
 }) => {
   let resData = null;
   try {
-    resData = await post("room/newRoom", data); // 登录成功
+    resData = await post("room/newRoom", data);
     message.success("群聊创建成功");
   } catch (error: any) {
     console.log(error); // 注册失败或者其它网络错误
     message.error(error);
   }
-  return resData;
+  return resData as any;
 };

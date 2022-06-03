@@ -54,6 +54,15 @@ export const pullFriendList = (id: string) => {
           friendIdList.push(item.data.id);
           // 添加用户到redux
           dispatch({ type: singleChat.ADD_FRIEND, data: item.data });
+
+          // 初始化拉取的消息id，为后面分页做准备
+          if (!item.message || item.message.length === 0) {
+            dispatch({
+              type: singleChat.SET_MESSAGE_START_ID,
+              data: { id: item.data.id, startMessageId: 0 },
+            });
+          }
+
           if (item.message) {
             for (let val of item.message.reverse()) {
               if (val.userId === id) {
@@ -61,6 +70,10 @@ export const pullFriendList = (id: string) => {
               }
               dispatch({ type: singleChat.RECEIVE_MESSAGE, data: val });
             }
+            dispatch({
+              type: singleChat.SET_MESSAGE_START_ID,
+              data: { id: item.data.id, startMessageId: item.message[0].id },
+            });
           }
         }
         return friendIdList;
@@ -77,10 +90,11 @@ export const pullConcatMessage = (
   id: string,
   targetUserId: string,
   skip: number,
-  take: number
+  take: number,
+  startId:number
 ) => {
   return (dispatch: any) => {
-    pullChatMessage(id, targetUserId, skip, take).then((data: Message[]) => {
+    pullChatMessage(id, targetUserId, skip, take,startId).then((data: Message[]) => {
       data.forEach((val) => {
         dispatch({
           type: singleChat.PULL_MESSAGE,

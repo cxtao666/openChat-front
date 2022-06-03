@@ -9,6 +9,7 @@ const SET_TARGET_MESSAGE_HAS_READ = 'setTargetMessageHasRead' // 设置对方消
 const PULL_MESSAGE = 'pullMessage' // 拉取好友的聊天记录
 const SET_FRIEND_IS_ONLINE = 'setFriendIsOnline' // 用户上线设置好友的在线状态
 const UPDATE_FRIEND_ONLINE_STATUS = 'updateFriendOnlineStatus' // 更新好友的在线状态
+const SET_MESSAGE_START_ID = "setMessageStartId" // 设置消息的初始化id
 
 export const singleChat = {
   SEND_MESSAGE,
@@ -21,5 +22,6 @@ export const singleChat = {
   SET_TARGET_MESSAGE_HAS_READ,
   PULL_MESSAGE,
   SET_FRIEND_IS_ONLINE,
-  UPDATE_FRIEND_ONLINE_STATUS
+  UPDATE_FRIEND_ONLINE_STATUS,
+  SET_MESSAGE_START_ID
 };
