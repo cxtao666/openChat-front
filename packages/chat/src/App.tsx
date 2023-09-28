@@ -1,7 +1,7 @@
 import React from "react";
 import Index from "./pages/Index";
 import Login from "./pages/Login";
-import { Route } from "react-router-dom";
+import { BrowserRouter, Route } from "react-router-dom";
 import Register from "pages/Register";
 import { ErrorPage } from 'components/error';
 import "antd/dist/antd.css";
@@ -10,10 +10,13 @@ import "antd/dist/antd.css";
 function App() {
   return (
     <div style={{ height: "100%" }}>
-      <Route path="/index" component={Index} />
-      <Route path="/login" component={Login}></Route>
-      <Route path="/register" component={Register}></Route>
-      <Route path="/404"  component={ErrorPage}/>
+      <BrowserRouter basename={window.__POWERED_BY_QIANKUN__ ? '/app-react' : '/'}>
+        <Route path="/index" component={Index} />
+        <Route path="/login" component={Login}></Route>
+        <Route path="/register" component={Register}></Route>
+        <Route path="/404" component={ErrorPage} />
+      </BrowserRouter>
+
     </div>
   );
 }
