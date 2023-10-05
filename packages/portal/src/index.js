@@ -24,6 +24,12 @@ registerMicroApps([
     container: '#container',
     activeRule: '/',
   },
+  {
+    name: 'reactApp',
+    entry: '//localhost:5000',
+    container: '#container',
+    activeRule: '/document',
+  },
 ]);
 // 启动 qiankun
 start();
