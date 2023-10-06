@@ -14,23 +14,20 @@ declare global {
     TATGET_USER: any; // 当前聊天窗口的目标用户
     TARGET_ROOM: any; // 当前聊天窗口德目标房间
     USERID: any; // 当前用户的id
+    __POWERED_BY_QIANKUN__: any;
   }
 }
 
-const render = (props) => {
+const render = (props: any) => {
   const CHAT_BASIC = createSocket(store);
   window.CHAT_BASIC = CHAT_BASIC;
-  ReactDOM.render(
-    <Provider store={store}>
-      <Router>
-        <React.StrictMode>
-          <App />
-        </React.StrictMode>
-      </Router>
-    </Provider>,
-    document.getElementById("root")
-  );
-  ReactDOM.render(<App />, props.container ? props.container.querySelector('#root') : document.getElementById('root'));
+  ReactDOM.render(<Provider store={store}>
+    <Router>
+      <React.StrictMode>
+        <App />
+      </React.StrictMode>
+    </Router>
+  </Provider>, props.container ? props.container.querySelector('#root') : document.getElementById('root'));
 }
 
 
@@ -57,6 +54,7 @@ export async function bootstrap() {
  * 应用每次进入都会调用 mount 方法，通常我们在这里触发应用的渲染方法
  */
 export async function mount(props: any) {
+  console.log(props.container.querySelector('#root'))
   render(props);
 }
 

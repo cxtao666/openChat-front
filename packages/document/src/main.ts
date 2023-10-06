@@ -12,7 +12,7 @@ const render = ({ container } = {}) => {
     instance = createApp(App)
     instance.use(createPinia())
     instance.use(router)
-    instance.mount(container ? container.querySelector('#admin') : '#app')
+    instance.mount(container ? container.querySelector('#app') : '#app')
 }
 
 // 如果是单独启动的子文件，保证仍能正常运行
@@ -24,7 +24,7 @@ if (!window.__POWERED_BY_QIANKUN__) {
 // 生命周期的钩子函数
 // 导出第一次进入当前子应用的钩子函数
 export async function bootstrap() {
-    console.log('第一次进入admin')
+    console.log('第一次进入')
 }
 
 // 导出每次创建挂载时的钩子函数

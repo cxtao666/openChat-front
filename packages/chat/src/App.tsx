@@ -10,13 +10,12 @@ import "antd/dist/antd.css";
 function App() {
   return (
     <div style={{ height: "100%" }}>
-      <BrowserRouter basename={window.__POWERED_BY_QIANKUN__ ? '/app-react' : '/'}>
+      <BrowserRouter basename={window.__POWERED_BY_QIANKUN__ ? '/chat' : '/'}>
         <Route path="/index" component={Index} />
         <Route path="/login" component={Login}></Route>
         <Route path="/register" component={Register}></Route>
         <Route path="/404" component={ErrorPage} />
       </BrowserRouter>
-
     </div>
   );
 }

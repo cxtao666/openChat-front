@@ -19,15 +19,15 @@ reportWebVitals();
 
 registerMicroApps([
   {
-    name: 'reactApp',
-    entry: '//localhost:4000',
-    container: '#container',
-    activeRule: '/',
+    name: 'chat',
+    entry: 'http://localhost:3001',
+    container: '#root',
+    activeRule: '/chat',
   },
   {
-    name: 'reactApp',
-    entry: '//localhost:5000',
-    container: '#container',
+    name: 'document',
+    entry: 'http://localhost:3002',
+    container: '#app',
     activeRule: '/document',
   },
 ]);
