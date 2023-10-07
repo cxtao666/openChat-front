@@ -11,6 +11,12 @@
   "author": "",
   "license": "ISC",
   "devDependencies": {
-    "electron": "^26.3.0"
+    "electron": "^26.3.0",
+    "lerna": "^7.3.0"
+  },
+  "workspaces": {
+    "packages": [
+      "packages/*"
+    ]
   }
 }
