@@ -30,6 +30,7 @@ export async function bootstrap() {
 // 导出每次创建挂载时的钩子函数
 export async function mount(props) {
     console.log("创建挂载组件")
+    console.log(props.container)
     render(props)
 }
 

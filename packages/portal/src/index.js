@@ -21,11 +21,11 @@ registerMicroApps([
   {
     name: 'chat',
     entry: 'http://localhost:3001',
-    container: '#root',
+    container: '#app',
     activeRule: '/chat',
   },
   {
-    name: 'document',
+    name: 'cloudDocument',
     entry: 'http://localhost:3002',
     container: '#app',
     activeRule: '/document',
