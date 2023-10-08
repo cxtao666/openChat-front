@@ -6,9 +6,16 @@ import { createPinia } from 'pinia'
 import App from './App.vue'
 import router from './router'
 
-let instance = null
+let instance: any = null
 
-const render = ({ container } = {}) => {
+declare global {
+    interface Window {
+        __POWERED_BY_QIANKUN__: any;
+    }
+}
+
+const render = (props: any) => {
+    const container = props?.container
     instance = createApp(App)
     instance.use(createPinia())
     instance.use(router)
@@ -17,7 +24,7 @@ const render = ({ container } = {}) => {
 
 // 如果是单独启动的子文件，保证仍能正常运行
 if (!window.__POWERED_BY_QIANKUN__) {
-    render()
+    render({})
 }
 
 
@@ -28,14 +35,14 @@ export async function bootstrap() {
 }
 
 // 导出每次创建挂载时的钩子函数
-export async function mount(props) {
+export async function mount(props: any) {
     console.log("创建挂载组件")
     console.log(props.container)
     render(props)
 }
 
 // 导出每次销毁时的钩子函数
-export async function unmount(props) {
+export async function unmount() {
     console.log("销毁组件")
     instance.unmount()
     instance._container.innerHTML = ''
