@@ -18,18 +18,19 @@ root.render(
 // or send to an analytics endpoint. Learn more: https://bit.ly/CRA-vitals
 reportWebVitals();
 
+// 微前端前端框架的路由代码由浏览器执行，nginx路由的配置是nginx服务器执行
 registerMicroApps([
   {
     name: 'chat',
-    entry: isProd ? `//${location.host}/chat/` : 'http://localhost:3001',
+    entry: isProd ? `/chat/` : 'http://localhost:3001',
     container: '#app',
-    activeRule: '/chat',
+    activeRule: '/chatApp',
   },
   {
     name: 'doc',
-    entry: isProd ? `//${location.host}/doc/` : 'http://localhost:3002',
+    entry: isProd ? `/doc/` : 'http://localhost:3002',
     container: '#app',
-    activeRule: '/document',
+    activeRule: '/cloudDoc',
   },
 ]);
 // 启动 qiankun

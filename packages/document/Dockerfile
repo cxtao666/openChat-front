@@ -3,7 +3,7 @@ FROM node:16-alpine as build-stage
 # 指定工作目录/app用于存放前端制品，以便在COPY,RUN以及下一个构建阶段中使用。
 WORKDIR /app
 # 复制package.json、package-lock.json、yarn.lock到工作目录里，COPY最后一个参数dest如果是相对路径，则会以工作目录有作为基准，复制到WORKDIR/<dest>里
-COPY package*.json yarn.lock ./
+COPY package*.json  ./
 # 下载依赖
 RUN yarn install
 COPY . .

@@ -8,9 +8,10 @@ const isProd = process.env.NODE_ENV === "production";
 
 // https://vitejs.dev/config/
 export default defineConfig({
-  transpileDependencies: true,
-  // 加上公共路径前缀
-  publicPath: isProd ? "/doc/" : undefined,
+  build: {
+    assetsDir: 'assets', // 资源文件的输出目录
+    assetsPublicPath: '/doc/', // 资源文件的 URL 前缀
+  },
   plugins: [
     vue(),
     vueJsx(),
