@@ -4,6 +4,7 @@ import './index.css';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
 import { registerMicroApps, start } from 'qiankun';
+const isProd = process.env.NODE_ENV === "production";
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
@@ -20,13 +21,13 @@ reportWebVitals();
 registerMicroApps([
   {
     name: 'chat',
-    entry: 'http://localhost:3001',
+    entry: isProd ? `//${location.host}/chat/` : 'http://localhost:3001',
     container: '#app',
     activeRule: '/chat',
   },
   {
-    name: 'cloudDocument',
-    entry: 'http://localhost:3002',
+    name: 'doc',
+    entry: isProd ? `//${location.host}/doc/` : 'http://localhost:3002',
     container: '#app',
     activeRule: '/document',
   },
