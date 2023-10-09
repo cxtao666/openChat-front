@@ -21,3 +21,13 @@ services:
       NODE_ENV: 'production'
     depends_on:            # 依赖容器名，会在此容器启动之后启动
       - master
+  chat:
+    container_name: chat
+    restart: always
+    build: 
+      context: ./packages/chat
+      dockerfile: Dockerfile
+    environment:
+      NODE_ENV: 'production'
+    depends_on:            # 依赖容器名，会在此容器启动之后启动
+      - master

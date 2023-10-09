@@ -1,4 +1,5 @@
 const { name } = require('./package');
+const isProd = process.env.NODE_ENV === 'production'
 
 module.exports = {
   webpack: (config) => {
@@ -7,7 +8,7 @@ module.exports = {
     // webpack 5 需要把 jsonpFunction 替换成 chunkLoadingGlobal
     config.output.jsonpFunction = `webpackJsonp_${name}`; 
     config.output.globalObject = 'window';
-
+    config.output.publicPath = isProd ? '/chat/' : ''
     return config;
   },
 
