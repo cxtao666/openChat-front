@@ -1,14 +1,15 @@
 pipeline {
+     environment {
+        PATH = "$PATH:/usr/local/bin"
+    }
     agent any
-
     stages {
         stage('Deploy') {
             steps {
-                sh 'docker-compose up -d'
+                sh 'docker-compose up -d --build'
             }
         }
     }
-
     post {
         success {
             // 如果流水线成功执行
