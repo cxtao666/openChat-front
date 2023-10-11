@@ -4,9 +4,9 @@
   "description": "",
   "main": "main.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "test": "sh ./sh/test.sh",
     "start": "electron .",
-    "dev": "pnpm -C ./packages/chat dev & pnpm -C ./packages/document dev & pnpm -C ./packages/portal dev"
+    "build": "sh ./sh/build.sh"
   },
   "keywords": [],
   "author": "",
