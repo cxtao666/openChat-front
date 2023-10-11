@@ -4,7 +4,7 @@ import { removeInfoFromStorage } from './storage';
 const instance = axios.create({
   //创建axios实例，在这里可以设置请求的默认配置
   timeout: 10000, // 设置超时时间10s
-  baseURL: "http://localhost:3000/api/", //根据自己配置的反向代理去设置不同环境的baeUrl
+  baseURL: "/api/", //根据自己配置的反向代理去设置不同环境的baeUrl
 });
 // 文档中的统一设置post请求头。下面会说到post请求的几种'Content-Type'
 instance.defaults.headers.post["Content-Type"] = "application/json";

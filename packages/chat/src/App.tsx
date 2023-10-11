@@ -16,7 +16,7 @@ function App() {
         <Route path="/register" component={Register}></Route>
         <Route path="/404" component={ErrorPage} />
       </BrowserRouter> */}
-      <Index></Index>
+      <Login></Login>
     </div>
   );
 }
