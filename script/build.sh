@@ -12,10 +12,12 @@ do
   if [ "$app" = "$char" ]; then 
     continue
   fi
-  echo "test $app"
+  echo "Building $app"
   cd "$app"
-  npm run test
+  npm run build
   cd ..
 done
 
-echo "All apps have been test"
+echo "All apps have been build"
+
+

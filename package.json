@@ -4,9 +4,10 @@
   "description": "",
   "main": "main.js",
   "scripts": {
-    "test": "sh ./sh/test.sh",
+    "test": "node ./script/test.js",
     "start": "electron .",
-    "build": "sh ./sh/build.sh"
+    "build": "sh ./script/build.sh",
+    "dev": "node ./script/dev.js"
   },
   "keywords": [],
   "author": "",

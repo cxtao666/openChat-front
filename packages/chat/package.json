@@ -37,7 +37,7 @@
     "web-vitals": "^1.0.1"
   },
   "scripts": {
-    "dev": "rescripts start --port 3001",
+    "dev": "export NODE_OPTIONS=--openssl-legacy-provider && PORT=3001 rescripts start",
     "build": "rescripts build",
     "test": "rescripts test",
     "eject": "rescripts eject",
