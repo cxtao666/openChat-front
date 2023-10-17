@@ -4,22 +4,48 @@ pipeline {
     }
     agent any
     stages {
-        stage('Deploy') {
-            steps {
-                sh 'docker-compose up -d --build'
-            }
-        }
+      stage("检出") {
+      steps {
+        checkout(
+          [$class: 'GitSCM',
+          branches: [[name: GIT_BUILD_REF]],
+          userRemoteConfigs: [[
+            url: GIT_REPO_URL,
+              credentialsId: CREDENTIALS_ID
+            ]]]
+        )
+      }
     }
-    post {
-        success {
-            // 如果流水线成功执行
-            echo 'Frontend pipeline succeeded! Sending notifications...'
-            // 在这里可以添加通知、触发后端部署等操作
+        
+    stage('安装依赖') {
+      steps {
+        sh "npm install pnpm -g"
+        sh "pnpm install"
+      }
+    }
+    
+    stage('单元测试') {
+      steps {
+        sh "pnpm --filter ${env.App} run test"
+      }
+      post {
+        always {
+          // 收集测试报告
+          junit 'reports/**/*.xml'
         }
-        failure {
-            // 如果流水线执行失败
-            echo 'Frontend pipeline failed! Sending notifications...'
-            // 在这里可以添加通知、回滚部署等操作
-        }
+      }
+    }
+    
+    stage('依赖漏洞扫描') {
+      steps {
+        npmAuditInDir(directory: '/', collectResult: true)
+      }
+    }
+
+    stage('构建') {
+      steps {
+        sh "pnpm --filter ${env.App} run build"
+      }
+    }
     }
 }
