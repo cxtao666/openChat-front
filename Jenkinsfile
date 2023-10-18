@@ -34,7 +34,11 @@ pipeline {
 
       }
       steps {
-        sh "pnpm --filter $APP run test"
+        if(env.GIT_BRANCH == 'master'){
+          sh "npm run test"
+        }else{
+          sh "pnpm --filter $APP run test"
+        }  
       }
     }
 
@@ -46,7 +50,11 @@ pipeline {
 
     stage('构建') {
       steps {
-        sh "pnpm --filter $APP run build"
+        if(env.GIT_BRANCH == 'master'){
+           sh "npm run test"
+        }else{
+          sh "pnpm --filter $APP run build"
+        }   
       }
     }
 
