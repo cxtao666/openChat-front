@@ -27,44 +27,46 @@ pipeline {
     }
 
     stage('master单元测试') {
-      post {
-        always {
-          junit 'reports/**/*.xml'
+      when {
+        expression {
+          env.BRANCH_NAME == 'master'
         }
-      }
-       when {
-          expression {
-                // 判断当前分支是否是 master
-                return env.GIT_BRANCH == 'master'
-            }
-        }
-            steps {
-                script {
-                    // 在 master 分支上执行 npm run test
-                    sh 'npm run test'
-                }
-      }   
-  }
 
-  stage('dev单元测试') {
+      }
       post {
         always {
           junit 'reports/**/*.xml'
         }
+
       }
-       when {
-          expression {
-                // 判断当前分支是否是 master
-                return env.GIT_BRANCH != 'master'
-            }
+      steps {
+        script {
+          sh 'npm run test'
         }
-            steps {
-                script {
-                    // 在 master 分支上执行 npm run test
-                    sh "pnpm --filter $APP run test"
-              }
-      }   
-  }
+
+      }
+    }
+
+    stage('dev单元测试') {
+      when {
+        expression {
+          env.BRANCH_NAME != 'master'
+        }
+
+      }
+      post {
+        always {
+          junit 'reports/**/*.xml'
+        }
+
+      }
+      steps {
+        script {
+          sh "pnpm --filter $APP run test"
+        }
+
+      }
+    }
 
     stage('依赖漏洞扫描') {
       steps {
@@ -73,37 +75,36 @@ pipeline {
     }
 
     stage('master构建') {
-       when {
-          expression {
-                // 判断当前分支是否是 master
-                return env.GIT_BRANCH == 'master'
-            }
+      when {
+        expression {
+          env.BRANCH_NAME == 'master'
         }
-            steps {
-                script {
-                    // 在 master 分支上执行 npm run test
-                    sh 'npm run build'
-                }
-      }   
-  }
 
-  stage('dev构建') {
-       when {
-          expression {
-                // 判断当前分支是否是 master
-                return env.GIT_BRANCH != 'master'
-            }
+      }
+      steps {
+        script {
+          sh 'npm run build'
         }
-            steps {
-                script {
-                    // 在 master 分支上执行 npm run test
-                    sh "pnpm --filter $APP run build"
-                }
-      }   
-  }
+
+      }
+    }
+
+    stage('dev构建') {
+      when {
+        expression {
+          env.BRANCH_NAME != 'master'
+        }
+
+      }
+      steps {
+        script {
+          sh "pnpm --filter $APP run build"
+        }
+
+      }
+    }
 
   }
 }
-
 
  
