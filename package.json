@@ -14,7 +14,8 @@
   "license": "ISC",
   "devDependencies": {
     "electron": "^26.3.0",
-    "lerna": "^7.3.0"
+    "nx": "16.10.0",
+    "nx-cloud": "latest"
   },
   "workspaces": {
     "packages": [
