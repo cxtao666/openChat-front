@@ -1,5 +1,8 @@
 pipeline {
   agent any
+   tools {
+        nodejs 'v18.18.0' // 指定配置中定义的Node.js版本
+    }
   stages {
     stage('检出') {
       steps {
