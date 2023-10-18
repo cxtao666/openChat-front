@@ -26,21 +26,44 @@ pipeline {
       }
     }
 
-    stage('单元测试') {
+    stage('master单元测试') {
       post {
         always {
           junit 'reports/**/*.xml'
         }
       }
-      steps {
-        script {
-        if(env.GIT_BRANCH == 'master'){
-          sh "npm run test"
-        } else {
-          sh "pnpm --filter $APP run test"
-        }  
+       when {
+          expression {
+                // 判断当前分支是否是 master
+                return env.GIT_BRANCH == 'master'
+            }
+        }
+            steps {
+                script {
+                    // 在 master 分支上执行 npm run test
+                    sh 'npm run test'
+                }
+      }   
+  }
+
+  stage('dev单元测试') {
+      post {
+        always {
+          junit 'reports/**/*.xml'
+        }
       }
-    }
+       when {
+          expression {
+                // 判断当前分支是否是 master
+                return env.GIT_BRANCH != 'master'
+            }
+        }
+            steps {
+                script {
+                    // 在 master 分支上执行 npm run test
+                    sh "pnpm --filter $APP run test"
+              }
+      }   
   }
 
     stage('依赖漏洞扫描') {
@@ -49,17 +72,38 @@ pipeline {
       }
     }
 
-    stage('构建') {
-      steps {
-        script {
-         if(env.GIT_BRANCH == 'master'){
-           sh "npm run test"
-        }else {
-          sh "pnpm --filter $APP run build"
-        }     
-      }
-    }
+    stage('master构建') {
+       when {
+          expression {
+                // 判断当前分支是否是 master
+                return env.GIT_BRANCH == 'master'
+            }
+        }
+            steps {
+                script {
+                    // 在 master 分支上执行 npm run test
+                    sh 'npm run build'
+                }
+      }   
+  }
+
+  stage('dev构建') {
+       when {
+          expression {
+                // 判断当前分支是否是 master
+                return env.GIT_BRANCH != 'master'
+            }
+        }
+            steps {
+                script {
+                    // 在 master 分支上执行 npm run test
+                    sh "pnpm --filter $APP run build"
+                }
+      }   
   }
 
   }
 }
+
+
+ 
