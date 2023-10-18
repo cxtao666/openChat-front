@@ -8,15 +8,30 @@ importers:
 
   .:
     devDependencies:
+      '@commitlint/cli':
+        specifier: ^13.1.0
+        version: 13.2.1
+      '@commitlint/config-conventional':
+        specifier: ^13.1.0
+        version: 13.2.0
       electron:
         specifier: ^26.3.0
         version: 26.3.0
+      husky:
+        specifier: ^7.0.2
+        version: 7.0.4
+      lint-staged:
+        specifier: ^11.1.2
+        version: 11.2.6
       nx:
         specifier: 16.10.0
         version: 16.10.0
       nx-cloud:
         specifier: latest
         version: 16.5.2
+      prettier:
+        specifier: 2.4.1
+        version: 2.4.1
 
   packages/chat:
     dependencies:
