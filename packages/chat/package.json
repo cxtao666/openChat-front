@@ -38,7 +38,7 @@
   },
   "scripts": {
     "dev": "export NODE_OPTIONS=--openssl-legacy-provider && PORT=3001 rescripts start",
-    "build": "rescripts build",
+    "build": "export NODE_OPTIONS=--openssl-legacy-provider && rescripts build",
     "test": "rescripts test",
     "eject": "rescripts eject",
     "json-server": "json-server __json_server_mock__/db.json --watch"

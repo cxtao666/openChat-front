@@ -1,8 +1,12 @@
 pipeline {
-  agent any
-   tools {
-        nodejs 'v18.18.0' // 指定配置中定义的Node.js版本
+  agent {
+    docker {
+      reuseNode 'true'
+      registryUrl 'https://coding-public-docker.pkg.coding.net'
+      image 'public/docker/nodejs:18-2022'
     }
+
+  }
   stages {
     stage('检出') {
       steps {
