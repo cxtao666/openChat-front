@@ -34,7 +34,7 @@ pipeline {
 
       }
       steps {
-        sh "pnpm --filter ${$APP} run test"
+        sh "pnpm --filter $APP run test"
       }
     }
 
@@ -46,7 +46,7 @@ pipeline {
 
     stage('构建') {
       steps {
-        sh "pnpm --filter ${$APP} run build"
+        sh "pnpm --filter $APP run build"
       }
     }
 
