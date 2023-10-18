@@ -31,16 +31,17 @@ pipeline {
         always {
           junit 'reports/**/*.xml'
         }
-
       }
       steps {
+        script {
         if(env.GIT_BRANCH == 'master'){
           sh "npm run test"
-        }else{
+        } else {
           sh "pnpm --filter $APP run test"
         }  
       }
     }
+  }
 
     stage('依赖漏洞扫描') {
       steps {
@@ -50,13 +51,15 @@ pipeline {
 
     stage('构建') {
       steps {
-        if(env.GIT_BRANCH == 'master'){
+        script {
+         if(env.GIT_BRANCH == 'master'){
            sh "npm run test"
-        }else{
+        }else {
           sh "pnpm --filter $APP run build"
-        }   
+        }     
       }
     }
+  }
 
   }
 }
