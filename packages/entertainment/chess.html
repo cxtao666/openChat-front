@@ -1,0 +1,108 @@
+<!dOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport"
+        content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+    <title>绘制象棋</title>
+    <style>
+        body {
+            background-color: #C5C5C5;
+        }
+        canvas {
+            position: fixed;
+            background-color: #FFFFFF;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+        }
+    </style>
+</head>
+
+<body>
+    <canvas id="cvs" width="592" height="626"></canvas>
+    <script>
+        // 横是x,纵是y，向下
+        // moveTo(x, y)  移动到某个二维平面的某个点
+        // 绘制矩形 rect    坐标
+        // 绘制线  lineto   连线到该点
+        // 绘制圆   arc      圆心
+        // 设置原点 translate
+
+
+        let cx = document.getElementById('cvs').getContext('2d')
+        let w = 560, h = 594, wc = 70, hc = 66, m = 16              //棋盘的宽w和高h,格的宽wc和高hc,m为边距margin
+        const textSize = 8
+        cx.lineWidth = 4                   //画外边框
+        cx.strokeRect(10, 10, w + 12, h + 12)
+        cx.lineWidth = 2
+        draw('楚河')                       //画上上个半棋盘
+        cx.translate(w + m, h + m)			   //重新设置坐标原点
+        cx.rotate(180 * Math.PI / 180)     //旋转180度，画下个半棋盘
+        draw('漢界')
+        function draw(t) {
+            cx.translate(m, m)
+            //画小方格 ,半个棋盘，４行８列
+            for (let i = 0; i < 4; i++) {
+                for (let j = 0; j < 8; j++) {
+                    cx.strokeRect(wc * j, hc * i, wc, hc)
+                }
+            }
+            // 绘制上下的X
+            let aL = [[3, 0, 5, 2], [5, 0, 3, 2]]  //[x1,y1,x2,y2]为每条斜线两个端点下标：第几条纵线与第几条横线交点。
+            for (let p of aL) {
+                cx.beginPath()
+                cx.moveTo(p[0] * wc, p[1] * hc)
+                cx.lineTo(p[2] * wc, p[3] * hc)
+                cx.stroke()
+            }
+            //画卒和炮位置的小直角,[x,y]为卒和炮位置下标。
+            let aI = [[1, 2], [7, 2], [0, 3], [2, 3], [4, 3], [6, 3], [8, 3]]
+            for (let a of aI) {
+                d_a(a[0] * wc, a[1] * hc, 0, w)
+            }
+            //画中间文字
+            cx.font = '40px Verdana'  
+            cx.rotate(360 * Math.PI / 180) 
+            cx.fillText(t, 64, (h + 32) / 2)
+        }
+
+        //画小直角，x、y为中心点坐标,L:棋盘左边界坐标，R:棋盘右边界坐标
+        function d_a(x, y, L, R) {
+            cx.beginPath()
+            cx.translate(x, y)
+            for (i = 0; i < 4; i++) {
+                cx.rotate(90 * Math.PI / 180)         //每次旋转90度，画一个直角
+                if ((x != L) && (i > 1) || (x != R) && (i < 2)) {  //在棋盘内画
+                    cx.moveTo(-14, -4)
+                    cx.lineTo(-4, -4)
+                    cx.lineTo(-4, -14)
+                }
+            }
+            cx.stroke()
+            cx.translate(-x, -y)
+        }
+
+        drawChess(0, 0, '车', 'red', 'black')
+
+        // 画棋子
+        function drawChess(x, y, text, fillColor, strokeColor) {
+            cx.moveTo(x, y)
+            cx.beginPath();
+            cx.arc(x, y, 15, 0, 2 * Math.PI); // 使用 arc 方法绘制圆
+            cx.fillStyle = fillColor; // 设置填充颜色
+            cx.strokeStyle = strokeColor; // 设置边框颜色
+            cx.fill(); // 填充圆
+            cx.stroke(); // 绘制边框
+            cx.closePath(); // 结束路径
+            cx.moveTo(x, y)
+
+            cx.font = "20px serif";
+            cx.fillStyle = strokeColor;
+            cx.fillText(text, x, y);
+        }
+    </script>
+</body>
+
+</html>
