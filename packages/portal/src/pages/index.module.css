@@ -1,0 +1,11 @@
+.item{
+    background-color: black;
+}
+
+.item:active{
+    background-color:#cae6f5;
+}
+
+icon{
+   font-size: 20px;
+}

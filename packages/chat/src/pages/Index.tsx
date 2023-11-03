@@ -1,42 +1,30 @@
 /** @jsxImportSource @emotion/react */
 import React, { useState } from "react";
 import { css } from "@emotion/react";
-import  Chat  from "./Chat";
-import { Video } from "./Video";
-import { Meeting } from "./Meeting";
-import  GroupChat  from "./GroupChat";
+import Chat from "./Chat";
+import GroupChat from "./GroupChat";
 import { Route, Switch, useHistory, useRouteMatch } from "react-router-dom";
-import { Menu  } from 'antd';
-import { MessageFilled, IdcardFilled, VideoCameraFilled,BellFilled } from '@ant-design/icons';
+import { Menu } from 'antd';
+import { MessageFilled, IdcardFilled } from '@ant-design/icons';
 import { connect } from "react-redux";
 import indexCss from './index.module.css'
 import { State } from 'store/state/singleChat';
 
 
 // 组件必须以大写字母开头，否则TypeScript会大喊大叫
-function Index(props:State) {
+function Index(props: State) {
   const history = useHistory();
   const { path } = useRouteMatch();
   const tabs = [
     {
       key: "message",
       title: "聊天",
-      icon: <MessageFilled className={indexCss.icon} style={{color:"white"}} /> ,
+      icon: <MessageFilled className={indexCss.icon} style={{ color: "white" }} />,
     },
     {
       key: "groupChat",
       title: "群聊",
-      icon: <IdcardFilled className={indexCss.icon} style={{color:"white"}}/>,
-    },
-    {
-      key: "meeting",
-      title: "会议",
-      icon: <BellFilled className={indexCss.icon} style={{color:"white"}} />
-    },
-    {
-      key: "video",
-      title: "空间",
-      icon: <VideoCameraFilled className={indexCss.icon} style={{color:"white"}} />,
+      icon: <IdcardFilled className={indexCss.icon} style={{ color: "white" }} />,
     },
   ];
 
@@ -44,14 +32,8 @@ function Index(props:State) {
   const changeActiveKey = (key: string) => {
     setActiveKey(key);
     switch (key) {
-      case "video":
-        history.push(`${path}/video`);
-        break;
       case "message":
         history.push(`${path}/chat`);
-        break;
-      case "meeting":
-        history.push(`${path}/meeting`);
         break;
       case "groupChat":
         history.push(`${path}/groupChat`);
@@ -60,7 +42,7 @@ function Index(props:State) {
   };
 
   return (
-    <div style={{display:"flex",flexDirection:"row",width:"100%",height:"100%"}}>
+    <div style={{ display: "flex", flexDirection: "row", width: "100%", height: "100%" }}>
       <div
         css={css`
           left: 0px;
@@ -72,36 +54,35 @@ function Index(props:State) {
         `}
       >
         <img src={props.user?.avatar}
- alt="" style={{borderRadius:"50%",width:"100px",height:"100px"}} />
-        <Menu 
-          style={{padding:'0px'}}
+          alt="" style={{ borderRadius: "50%", width: "100px", height: "100px" }} />
+        <Menu
+          style={{ padding: '0px' }}
           defaultSelectedKeys={[activeKey === "index" ? "message" : activeKey]}
         >
           {tabs.map((item) => (
-            <div  onClick={()=>{
+            <div onClick={() => {
               changeActiveKey(item.key)
             }}
-            style={{display:"flex",flexDirection:"row",alignItems:"center",height:"50px",
-            justifyContent:"center",
-          }}
-            className={indexCss.item}
+              style={{
+                display: "flex", flexDirection: "row", alignItems: "center", height: "50px",
+                justifyContent: "center",
+              }}
+              className={indexCss.item}
             >
               {item.icon}
-              <div style={{cursor:"pointer",marginLeft:'10px',color:'white'}}>{item.title}</div>
+              <div style={{ cursor: "pointer", marginLeft: '10px', color: 'white' }}>{item.title}</div>
             </div>
           ))}
         </Menu>
       </div>
-      <div style={{flex:"1",height:"100%"}}>
-        {/index$/.test(window.location.href) ? <Chat></Chat>: <div></div>}
-      <Switch>
-        <Route path={`${path}/video`} component={Video}></Route>
-        <Route path={`${path}/chat`} component={Chat}></Route>
-        <Route path={`${path}/meeting`} component={Meeting}></Route>
-        <Route path={`${path}/groupChat`} component={GroupChat}></Route>
-      </Switch>
+      <div style={{ flex: "1", height: "100%" }}>
+        {/index$/.test(window.location.href) ? <Chat></Chat> : <div></div>}
+        <Switch>
+          <Route path={`${path}/chat`} component={Chat}></Route>
+          <Route path={`${path}/groupChat`} component={GroupChat}></Route>
+        </Switch>
       </div>
-      
+
     </div>
   );
 }
