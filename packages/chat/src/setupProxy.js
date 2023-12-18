@@ -5,9 +5,6 @@ module.exports = function (app) {
     createProxyMiddleware({
       target: "http://localhost:3000",
       changeOrigin: true,
-      pathRewrite: {   //修改请求路径的地方
-        '^/api': '' 
-      },
     })
   );
 };
