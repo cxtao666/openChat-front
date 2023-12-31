@@ -1,0 +1,50 @@
+name: Deploy Front Project
+
+on:
+  push:
+    branches: ['master']
+  pull_request:
+    branches: ['master']
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        node-version: [18.18.0]
+
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Use Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v3
+        with:
+          node-version: ${{ matrix.node-version }}
+
+      - name: test
+        run: |
+          npm install pnpm@8.7.6 -g
+          pnpm install
+          pnpm run test
+
+  deploy:
+    runs-on: ubuntu-latest
+    steps: 
+      - name: Deploy
+        uses: cross-the-world/ssh-scp-ssh-pipelines@latest
+        with:
+          host: ${{ secrets.DC_HOST }}
+          user: ${{ secrets.DC_USER }}
+          pass: ${{ secrets.DC_PASS }}
+          last_ssh: |
+            cd /home/openChat
+            rm -rf openChat-front
+            mkdir openChat-front
+            cd openChat-front
+            git init
+            git remote add origin git@github.com:cxtao666/openChat-front.git
+            git pull origin master
+            git checkout master
+            git remote remove origin
+            docker compose up -d  --build

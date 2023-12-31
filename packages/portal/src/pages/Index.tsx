@@ -38,19 +38,19 @@ function Index() {
         setActiveKey(key)
         switch (key) {
             case 'video':
-                window.location.href = `video`
+                window.location.href = `/index/video`
                 break
             case 'message':
-                window.location.href = `chatApp`
+                window.location.href = `/index/chatApp`
                 break
             case 'meeting':
-                window.location.href = `meeting`
+                window.location.href = `/index/meeting`
                 break
             case 'document':
-                window.location.href = `cloudDoc`
+                window.location.href = `/index/cloudDoc`
                 break
             case 'game':
-                window.location.href = `game`
+                window.location.href = `/index/game`
                 break
         }
     }

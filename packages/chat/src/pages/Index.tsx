@@ -14,7 +14,7 @@ import { chatName } from "common";
 // 组件必须以大写字母开头，否则TypeScript会大喊大叫
 function Index(props: State) {
   const history = useHistory();
-  const path = chatName
+  const path = `/index/${chatName}/` 
   const tabs = [
     {
       key: "message",
@@ -33,10 +33,10 @@ function Index(props: State) {
     setActiveKey(key);
     switch (key) {
       case "message":
-        history.push(`${path}chat`);
+        window.location.href = `${path}chat`;
         break;
       case "groupChat":
-        history.push(`${path}groupChat`);
+        window.location.href = `${path}groupChat`;
         break;
     }
   };

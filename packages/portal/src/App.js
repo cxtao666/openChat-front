@@ -9,7 +9,7 @@ function App() {
   return (
     <div className="App">
       <BrowserRouter >
-        <Route path="/" component={Index} />
+        <Route path="/index" component={Index} />
         <Route path="/login" component={Login}></Route>
         <Route path="/register" component={Register}></Route>
       </BrowserRouter>

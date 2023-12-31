@@ -61,7 +61,7 @@ registerMicroApps([
     name: 'chat',
     entry: isProd ? `/chat/` : 'http://localhost:3001',
     container: '#app',
-    activeRule: `/${chatName}`,
+    activeRule: `/index/${chatName}`,
     props: {
       user: {
         id: 123
@@ -72,13 +72,13 @@ registerMicroApps([
     name: 'doc',
     entry: isProd ? `/doc/` : 'http://localhost:3002',
     container: '#app',
-    activeRule: `/${docName}`,
+    activeRule: `/index/${docName}`,
   },
   {
     name: 'game',
     entry: isProd ? `/game/` : 'http://localhost:3005',
     container: '#app',
-    activeRule: `/${gameName}`,
+    activeRule: `/index/${gameName}`,
   },
 ]);
 

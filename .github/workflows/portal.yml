@@ -1,0 +1,30 @@
+name: Portal App Pipeline
+
+on:
+  push:
+    branches: [ "feat-portal-**" ]
+  pull_request:
+    branches: [ "feat-portal-**" ]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        node-version: [18.18.0]
+
+    steps:
+    - uses: actions/checkout@v3
+
+    - name: Use Node.js ${{ matrix.node-version }}
+      uses: actions/setup-node@v3
+      with:
+        node-version: ${{ matrix.node-version }}
+
+    - name: test
+      run: |
+        npm install pnpm@8.7.6 -g
+        pnpm install
+        pnpm run test portal
+
