@@ -7,7 +7,7 @@ import { registerMicroApps, start } from 'qiankun';
 import * as serviceWorkerRegistration from './serviceWorkerRegistration';
 import * as Sentry from "@sentry/react";
 import actions from "./store"
-import { chatName, docName } from "common"
+import { chatName, docName, gameName } from "common"
 const isProd = process.env.NODE_ENV === "production";
 
 
@@ -73,6 +73,12 @@ registerMicroApps([
     entry: isProd ? `/doc/` : 'http://localhost:3002',
     container: '#app',
     activeRule: `/${docName}`,
+  },
+  {
+    name: 'game',
+    entry: isProd ? `/game/` : 'http://localhost:3005',
+    container: '#app',
+    activeRule: `/${gameName}`,
   },
 ]);
 

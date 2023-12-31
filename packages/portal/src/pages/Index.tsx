@@ -25,6 +25,11 @@ function Index() {
             key: 'video',
             title: '空间',
             icon: <VideoCameraFilled style={{ color: 'white', fontSize: '20px' }} />
+        },
+        {
+            key: 'game',
+            title: '娱乐',
+            icon: <VideoCameraFilled style={{ color: 'white', fontSize: '20px' }} />
         }
     ]
 
@@ -43,6 +48,9 @@ function Index() {
                 break
             case 'document':
                 window.location.href = `cloudDoc`
+                break
+            case 'game':
+                window.location.href = `game`
                 break
         }
     }

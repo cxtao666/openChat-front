@@ -6,8 +6,12 @@
 
 	var chatName = 'chatApp';
 	var docName = 'cloudDoc';
+	var gameName = "game";
+	var meetingName = "meeting";
 
 	exports.chatName = chatName;
 	exports.docName = docName;
+	exports.gameName = gameName;
+	exports.meetingName = meetingName;
 
 }));

@@ -21,12 +21,10 @@
     "@commitlint/cli": "^13.1.0",
     "@commitlint/config-conventional": "^13.1.0"
   },
-  "workspaces": {
-    "package": [
-      "packages/*",
-      "libs/*"
-    ]
-  },
+  "workspaces": [
+    "packages/*",
+    "libs/*"
+  ],
   "husky": {
     "hooks": {
       "pre-commit": "lint-staged",
