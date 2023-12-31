@@ -5,7 +5,6 @@ import { MessageFilled, IdcardFilled, VideoCameraFilled, BellFilled } from '@ant
 // 组件必须以大写字母开头，否则TypeScript会大喊大叫
 function Index() {
     const history = useHistory()
-    const { path } = useRouteMatch()
     const tabs = [
         {
             key: 'message',
@@ -16,6 +15,11 @@ function Index() {
             key: 'meeting',
             title: '会议',
             icon: <BellFilled style={{ color: 'white', fontSize: '20px' }} />
+        },
+        {
+            key: 'document',
+            title: '文档',
+            icon: <VideoCameraFilled style={{ color: 'white', fontSize: '20px' }} />
         },
         {
             key: 'video',
@@ -29,16 +33,16 @@ function Index() {
         setActiveKey(key)
         switch (key) {
             case 'video':
-                history.push(`${path}/video`)
+                window.location.href = `video`
                 break
             case 'message':
-                history.push(`${path}/chat`)
+                window.location.href = `chatApp`
                 break
             case 'meeting':
-                history.push(`${path}/meeting`)
+                window.location.href = `meeting`
                 break
-            case 'groupChat':
-                history.push(`${path}/groupChat`)
+            case 'document':
+                window.location.href = `cloudDoc`
                 break
         }
     }

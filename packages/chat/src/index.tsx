@@ -7,6 +7,7 @@ import { BrowserRouter as Router } from "react-router-dom";
 import store from "store";
 import { Provider } from "react-redux";
 import { createSocket } from "./util/chat/index";
+import { connection } from "store/actions/singleChat";
 
 declare global {
   interface Window {
@@ -21,6 +22,8 @@ declare global {
 const render = (props: any) => {
   const CHAT_BASIC = createSocket(store);
   window.CHAT_BASIC = CHAT_BASIC;
+  store.dispatch(connection(props.user as any));
+  console.log(props.user.id)
   ReactDOM.render(<Provider store={store}>
     <Router>
       <React.StrictMode>
@@ -32,7 +35,7 @@ const render = (props: any) => {
 
 
 if (!window.__POWERED_BY_QIANKUN__) {
-  render({});
+  render({ user: {} });
 }
 
 
@@ -55,6 +58,10 @@ export async function bootstrap() {
  */
 export async function mount(props: any) {
   console.log(props.container.querySelector('#root'))
+  props.onGlobalStateChange((state: any, prev: any) => {
+    // state: 变更后的状态; prev 变更前的状态
+    console.log(state, prev);
+  });
   render(props);
 }
 

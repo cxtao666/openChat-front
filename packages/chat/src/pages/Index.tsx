@@ -9,16 +9,16 @@ import { MessageFilled, IdcardFilled } from '@ant-design/icons';
 import { connect } from "react-redux";
 import indexCss from './index.module.css'
 import { State } from 'store/state/singleChat';
-
+import { chatName } from "common";
 
 // 组件必须以大写字母开头，否则TypeScript会大喊大叫
 function Index(props: State) {
   const history = useHistory();
-  const { path } = useRouteMatch();
+  const path = chatName
   const tabs = [
     {
       key: "message",
-      title: "聊天",
+      title: "单聊",
       icon: <MessageFilled className={indexCss.icon} style={{ color: "white" }} />,
     },
     {
@@ -33,10 +33,10 @@ function Index(props: State) {
     setActiveKey(key);
     switch (key) {
       case "message":
-        history.push(`${path}/chat`);
+        history.push(`${path}chat`);
         break;
       case "groupChat":
-        history.push(`${path}/groupChat`);
+        history.push(`${path}groupChat`);
         break;
     }
   };
@@ -78,8 +78,8 @@ function Index(props: State) {
       <div style={{ flex: "1", height: "100%" }}>
         {/index$/.test(window.location.href) ? <Chat></Chat> : <div></div>}
         <Switch>
-          <Route path={`${path}/chat`} component={Chat}></Route>
-          <Route path={`${path}/groupChat`} component={GroupChat}></Route>
+          <Route path={`${path}chat`} component={Chat}></Route>
+          <Route path={`${path}groupChat`} component={GroupChat}></Route>
         </Switch>
       </div>
 

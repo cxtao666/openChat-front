@@ -1,0 +1,28 @@
+{
+    "compilerOptions": {
+      "target": "es5",
+      "lib": [
+        "dom",
+        "dom.iterable",
+        "esnext"
+      ],
+      "allowJs": true,
+      "skipLibCheck": true,
+      "esModuleInterop": true,
+      "allowSyntheticDefaultImports": true,
+      "strict": true,
+      "forceConsistentCasingInFileNames": true,
+      "noFallthroughCasesInSwitch": true,
+      "module": "esnext",
+      "moduleResolution": "node",
+      "resolveJsonModule": true,
+      "isolatedModules": true,
+      "noEmit": true,
+      "downlevelIteration": true,
+      "declaration": true, /* 生成相应的 '.d.ts' file. */ 
+      "declarationDir": "./dist/types", /* 类型声明文件输出目录 */
+    },
+    "include": [
+      "src"
+    ]
+  }
