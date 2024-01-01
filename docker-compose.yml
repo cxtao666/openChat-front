@@ -5,8 +5,8 @@ services:
     container_name: master      # 容器名
     restart: always        # 重启策略: 容器退出时总是重启容器
     build: 
-      context: ./packages/portal        # 服务指定上下文目录
-      dockerfile: Dockerfile    # 相对于context的dockerfile文件路径
+      context: ./       # 服务指定上下文目录
+      dockerfile: ./packages/portal/Dockerfile    # 相对于context的dockerfile文件路径
     environment:
       NODE_ENV: 'production' 
     ports:
@@ -17,8 +17,8 @@ services:
     container_name: doc
     restart: always
     build: 
-      context: ./packages/document
-      dockerfile: Dockerfile
+      context: ./
+      dockerfile: ./packages/document/Dockerfile
     environment:
       NODE_ENV: 'production'
     networks:
@@ -29,8 +29,8 @@ services:
     container_name: chat
     restart: always
     build: 
-      context: ./packages/chat
-      dockerfile: Dockerfile
+      context: ./
+      dockerfile: ./packages/chat/Dockerfile
     environment:
       NODE_ENV: 'production'
     networks:
