@@ -1,5 +1,5 @@
 {
-  "name": "common",
+  "name": "openchat-common",
   "version": "1.0.0",
   "description": "",
   "main": "./dist/bundle.js",

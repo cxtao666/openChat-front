@@ -7,7 +7,7 @@ import { registerMicroApps, start } from 'qiankun';
 import * as serviceWorkerRegistration from './serviceWorkerRegistration';
 import * as Sentry from "@sentry/react";
 import actions from "./store"
-import { chatName, docName, gameName } from "common"
+import { chatName, docName, gameName } from "openchat-common"
 const isProd = process.env.NODE_ENV === "production";
 
 

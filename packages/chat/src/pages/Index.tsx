@@ -9,7 +9,7 @@ import { MessageFilled, IdcardFilled } from '@ant-design/icons';
 import { connect } from "react-redux";
 import indexCss from './index.module.css'
 import { State } from 'store/state/singleChat';
-import { chatName } from "common";
+import { chatName } from "openchat-common";
 
 // 组件必须以大写字母开头，否则TypeScript会大喊大叫
 function Index(props: State) {

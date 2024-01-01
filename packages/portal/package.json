@@ -3,7 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
-    "common": "workspace:*",
+    "openchat-common": "1.0.0",
     "@sentry/react": "^7.91.0",
     "@ant-design/icons": "^4.7.0",
     "@testing-library/jest-dom": "^5.17.0",
