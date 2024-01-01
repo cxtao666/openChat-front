@@ -9,7 +9,7 @@ RUN npm install pnpm@8.7.6 -g
 # 下载依赖
 RUN pnpm install
 RUN cd ./packages/document
-RUN npm run build-only
+RUN npm run build
 RUN cd ../../
 
 # 新建构建阶段deploy-stage，指定nginx为基础镜像，该阶段用于配置和运行nginx
